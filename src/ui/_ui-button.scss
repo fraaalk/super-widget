@@ -1,0 +1,251 @@
+.ui-button {
+    @include ui-button();
+
+    // If the mouse helper class is present, enable hover states for custom theme
+    .ui-mouse.ui-theme--custom & {
+        &--primary {
+            &:not(.is-active):not(.is-disabled):not(.is-inactive):hover {
+                background: var(--color-ui-button--primary-background--hover);
+                border-color: var(--color-ui-button--primary-border--hover);
+                color: var(--color-ui-button--primary-color--hover);
+            }
+        }
+
+        &--secondary {
+            &:not(.is-active):not(.is-disabled):not(.is-inactive):hover {
+                background: var(--color-ui-button--secondary-background--hover);
+                border-color: var(--color-ui-button--secondary-border--hover);
+                color: var(--color-ui-button--secondary-color--hover);
+            }
+        }
+
+        &--cta {
+            &:not(.is-active):not(.is-disabled):not(.is-inactive):hover {
+                background: var(--color-ui-button--cta-background--hover);
+                border-color: var(--color-ui-button--cta-border--hover);
+                color: var(--color-ui-button--cta-color--hover);
+            }
+        }
+    }
+
+    // If the mouse helper class is present, enable hover states for the theme
+    .ui-mouse.ui-theme--dark & {
+        &--primary {
+            &:not(.is-active):not(.is-disabled):not(.is-inactive):hover {
+                background: color(var(--color-ui-button--primary-background) tint(75%));
+                border-color: color(var(--color-ui-button--primary-background) tint(75%));
+                color: var(--color-ui-button--primary-color--hover);
+            }
+        }
+
+        &--secondary {
+            &:not(.is-active):not(.is-disabled):not(.is-inactive):hover {
+                background: color(var(--color-ui-button--secondary-background) tint(75%));
+                border-color: color(var(--color-ui-button--secondary-background) tint(75%));
+                color: var(--color-ui-button--secondary-color);
+            }
+        }
+
+        &--cta {
+            &:not(.is-active):not(.is-disabled):not(.is-inactive):hover {
+                background: var(--color-ui-button--cta-background);
+                border-color: var(--color-ui-button--cta-background);
+                color: var(--color-ui-button--cta-color--hover);
+            }
+        }
+    }
+
+    // If the mouse helper class is present, enable hover states for the theme
+    .ui-mouse.ui-theme--light & {
+        &--primary {
+            &:not(.is-active):not(.is-disabled):not(.is-inactive):hover {
+                background: color(var(--color-ui-button--primary-background) shade(75%));
+                border-color: color(var(--color-ui-button--primary-background) shade(75%));
+                color: var(--color-ui-button--primary-color--hover);
+            }
+        }
+
+        &--secondary {
+            &:not(.is-active):not(.is-disabled):not(.is-inactive):hover {
+                background: color(var(--color-ui-button--secondary-background) shade(78%));
+                border-color: color(var(--color-ui-button--secondary-background) shade(78%));
+                color: var(--color-ui-button--secondary-color);
+            }
+        }
+
+        &--cta {
+            &:not(.is-active):not(.is-disabled):not(.is-inactive):hover {
+                background: var(--color-ui-button--cta-background);
+                border-color:var(--color-ui-button--cta-background);
+                color: var(--color-ui-button--cta-color--hover);
+            }
+        }
+    }
+
+    // Primary button
+    &--primary {
+        background: var(--color-ui-button--primary-background);
+        border-color: var(--color-ui-button--primary-background);
+        color: var(--color-ui-button--primary-color);
+        min-height: 34px;
+        padding: 5px;
+
+        &.is-active {
+            background: var(--color-ui-button--primary-background--active);
+            border-color: var(--color-ui-button--primary-background--active);
+            color: var(--color-ui-button--primary-color--active);
+        }
+
+        &.is-disabled {
+            background: color(var(--color-ui-button--primary-background--disabled) a(50%));
+            border-color: color(var(--color-ui-button--primary-background--disabled) a(50%));
+            color: color(var(--color-ui-button--primary-color--disabled) a(50%));
+        }
+    }
+
+    // Secondary button
+    &--secondary {
+        min-height: 34px;
+        padding: 4px;
+        font-weight: 300;
+
+        // secondary custom theme
+        .ui-theme--custom & {
+            background: var(--color-ui-button--secondary-background);
+            border-color: var(--color-ui-button--secondary-border);
+            color: var(--color-ui-button--secondary-color);
+
+            &.is-active {
+                background: var(--color-ui-button--secondary-background--active);
+                border-color: var(--color-ui-button--secondary-border--active);
+                color: var(--color-ui-button--secondary-color--active);
+            }
+
+            &.is-disabled {
+                background: var(--color-ui-button--secondary-background--disabled);
+                border-color: var(--color-ui-button--secondary-border--disabled);
+                color: var(--color-ui-button--secondary-color--disabled);
+            }
+        }
+
+        // secondary light theme
+        .ui-theme--light & {
+            background: color(var(--color-ui-button--secondary-background) shade(90%));
+            border-color: color(var(--color-ui-button--secondary-background) shade(90%));
+            color: var(--color-ui-button--secondary-color);
+
+            &.is-active {
+                background: color(var(--color-ui-button--secondary-background) shade(78%));
+                border-color: color(var(--color-ui-button--secondary-background) shade(78%));
+                color: var(--color-ui-button--secondary-color);
+            }
+
+            &.is-disabled {
+                background: color(var(--color-ui-button--secondary-background) shade(90%));
+                border-color: color(var(--color-ui-button--secondary-background) shade(90%));
+                color: color(var(--color-ui-button--secondary-color) a(20%));
+            }
+        }
+
+        // secondary dark theme
+        .ui-theme--dark & {
+            background: color(var(--color-ui-button--secondary-background) tint(80%));
+            border-color: color(var(--color-ui-button--secondary-background) tint(80%));
+            color: var(--color-ui-button--secondary-color);
+
+            &.is-active {
+                background: color(var(--color-ui-button--secondary-background) tint(65%));
+                border-color: color(var(--color-ui-button--secondary-background) tint(65%));
+                color: var(--color-ui-button--secondary-color);
+            }
+
+            &.is-disabled {
+                background: color(var(--color-ui-button--secondary-background) tint(80%));
+                border-color: color(var(--color-ui-button--secondary-background) tint(80%));
+                color: color(var(--color-ui-button--secondary-color) a(20%));
+            }
+        }
+    }
+
+    // Call to action button
+    &--cta {
+        font-weight: 400;
+        min-height: 34px;
+        border: 0;
+
+        // cta custom theme
+        .ui-theme--custom & {
+            background: var(--color-ui-button--cta-background);
+            border-color: var(--color-ui-button--cta-border);
+            color: var(--color-ui-button--cta-color);
+
+            &.is-active {
+                background: var(--color-ui-button--cta-background--active);
+                border-color: var(--color-ui-button--cta-border--active);
+                color: var(--color-ui-button--cta-color--active);
+            }
+
+            &.is-disabled {
+                background: var(--color-ui-button--cta-background--disabled);
+                border-color: var(--color-ui-button--cta-border--disabled);
+                color: var(--color-ui-button--cta-color--disabled);
+            }
+        }
+
+        // cta light & dark theme
+        .ui-theme--light &,
+        .ui-theme--dark & {
+            background: color(var(--color-ui-button--cta-background) a(35%));
+            border-color: color(var(--color-ui-button--cta-background) a(35%));
+            color: var(--color-ui-button--cta-color);
+
+            &.is-active {
+                background: var(--color-ui-button--cta-background);
+                border-color: var(--color-ui-button--cta-background);
+                color: var(--color-ui-button--cta-color);
+            }
+
+            &.is-disabled {
+                background: color(var(--color-ui-button--cta-background--disabled) a(2%));
+                border-color: color(var(--color-ui-button--cta-background--disabled) a(2%));
+                color: color(var(--color-ui-button--cta-color--disabled) a(50%));
+            }
+        }
+    }
+
+    // inner wrapper for firefox and other browser,
+    // which cant handle flex inside a button element
+    &__inner {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        pointer-events: none;
+        text-align: center;
+        flex-grow: 1;
+
+        &--left {
+            justify-content: flex-start;
+        }
+
+        &--right {
+            justify-content: flex-end;
+        }
+
+        > * {
+            display: flex;
+        }
+
+        svg + span,
+        span + svg {
+            margin-left: 5px;
+        }
+    }
+
+    // icon inside a button
+    &__icon {
+        width: 24px;
+        height: 24px;
+        transform: scale(1);
+        fill: currentColor;
+    }
+}

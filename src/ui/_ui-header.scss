@@ -1,0 +1,61 @@
+.ui-header {
+    &--bordered {
+        width: calc(100% - 1em);
+        margin: 0 0.5em 1em 0.5em;
+
+        .ui-theme--custom & {
+            border-bottom: 1px solid var(--color-ui-delimiter);
+        }
+
+        .ui-theme--dark & {
+            border-bottom: 1px solid color(var(--color-ui-background) tint(85%));
+        }
+
+        .ui-theme--light & {
+            border-bottom: 1px solid color(var(--color-ui-background) shade(85%));
+        }
+    }
+}
+
+.ui-title {
+    color: var(--color-ui-header__title-color);
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+
+    &--extralarge {
+        font-size: 22px;
+    }
+
+    &--large {
+        font-size: 20px;
+    }
+
+    &--small {
+        font-size: 16px;
+    }
+
+    &--extrasmall {
+        font-size: 16px;
+    }
+
+    @include breakpoint($bp-sm-up) {
+        font-size: 20px;
+
+        &--extralarge {
+            font-size: 28px;
+        }
+
+        &--large {
+            font-size: 26px;
+        }
+
+        &--small {
+            font-size: 18px;
+        }
+
+        &--extrasmall {
+            font-size: 16px;
+        }
+    }
+}

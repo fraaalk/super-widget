@@ -1,0 +1,38 @@
+// breakpoints
+$bp-xs: 480px;
+$bp-sm: 600px;
+$bp-md: 768px;
+$bp-lg: 992px;
+$bp-xlg: 1200px;
+
+// mediaqueries for breakpoint
+// https://github.com/at-import/breakpoint/wiki/Basic-Media-Queries
+$bp-xs-up: 'min-width' $bp-xs;
+$bp-xs-down: 0 $bp-xs;
+$bp-xs-only: 0 $bp-xs;
+$bp-sm-up: 'min-width' $bp-sm;
+$bp-sm-down: 0 $bp-sm;
+$bp-sm-only: ($bp-xs + 1) $bp-sm;
+$bp-md-up: 'min-width' $bp-md;
+$bp-md-down: 0 $bp-md;
+$bp-md-only: ($bp-sm + 1) $bp-md;
+$bp-lg-up: 'min-width' $bp-lg;
+$bp-lg-down: 0 $bp-lg;
+$bp-lg-only: ($bp-md + 1) $bp-lg;
+$bp-xlg-up: 'min-width' $bp-xlg;
+$bp-xlg-down: 0 $bp-xlg;
+$bp-xlg-only: 'min-width' $bp-xlg;
+
+// reflex grid variables
+// https://github.com/leejordan/reflex
+$reflex-xs: $bp-xs;
+$reflex-sm: $bp-sm;
+$reflex-md: $bp-md;
+$reflex-lg: $bp-lg;
+$reflex-xlg: $bp-xlg;
+
+$reflex-grid-spacing:       0.5em !default;
+
+$reflex-cell-spacing-sm:    ($reflex-grid-spacing / 2);
+$reflex-cell-spacing-md:    $reflex-grid-spacing;
+$reflex-cell-spacing-lg:    ($reflex-grid-spacing * 2);

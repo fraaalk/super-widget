@@ -1,0 +1,22 @@
+.ui-button-group {
+    display: flex;
+
+    > * {
+        flex: 1 1 auto;
+        padding: 5px 2px;
+
+        @include first(1) {
+            border-bottom-left-radius: 3px;
+            border-top-left-radius: 3px;
+        }
+
+        @include last(1) {
+            border-bottom-right-radius: 3px;
+            border-top-right-radius: 3px;
+        }
+    }
+
+    > * + * {
+        margin-left: 1px;
+    }
+}

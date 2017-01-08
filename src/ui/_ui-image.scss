@@ -1,0 +1,30 @@
+.ui-image {
+    &--placeholder {
+        padding: 10% 20% 20% 20%;
+        height: 100% !important;
+
+        // secondary custom theme
+        .ui-theme--custom & {
+            background: var(--color-ui-image-background);
+            fill: var(--color-ui-image-color);
+        }
+
+        // secondary light theme
+        .ui-theme--light & {
+            background: color(var(--color-ui-button--secondary-background) shade(90%));
+            fill: var(--color-ui-button--secondary-color);
+        }
+
+        // secondary dark theme
+        .ui-theme--dark & {
+            background: color(var(--color-ui-button--secondary-background) tint(80%));
+            fill: var(--color-ui-button--secondary-color);
+        }
+    }
+
+    &--responsive {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+}

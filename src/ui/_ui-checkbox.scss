@@ -1,0 +1,4 @@
+// checkboxes
+.ui-checkbox {
+    @include ui-reset-checkbox-radio( 'checkbox' );
+}

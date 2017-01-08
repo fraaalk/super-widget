@@ -1,0 +1,38 @@
+.ui-link {
+    color: var(--color-ui-link-color);
+    font-size: inherit;
+    text-decoration: underline;
+
+    &--highlight {
+        color: var(--color-ui-highlight);
+    }
+
+    // silent and muted links should not be visible
+    // on the first run, so style it as normal text
+    &--silent,
+    &--muted {
+        color: inherit;
+        font-size: inherit;
+        text-decoration: inherit;
+    }
+
+    // If the mouse helper class is present, enable hover states
+    .ui-mouse & {
+        &:hover {
+            color: var(--color-ui-link-color--hover);
+            text-decoration: none;
+        }
+
+        // a muted link gets at least an underline to mark it as an link
+        &--muted:hover {
+            color: inherit;
+            text-decoration: underline;
+        }
+
+        // and the silent link, just acts as a clickable element without underlin
+        &--silent:hover {
+            color: inherit;
+            text-decoration: inherit;
+        }
+    }
+}

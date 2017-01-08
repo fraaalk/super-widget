@@ -1,0 +1,12 @@
+.ui-select {
+    @include ui-select();
+    border-color: #CBCBCE;
+    color: #000;
+
+    .ui-mouse & {
+        &:hover {
+            border-color: #AEAEB1;
+            cursor: pointer;
+        }
+    }
+}

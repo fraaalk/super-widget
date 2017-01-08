@@ -1,0 +1,8 @@
+// ui input group, grouping and input with a button before or after
+ .ui-input-group {
+    display: flex;
+
+    input {
+        flex: 1;
+    }
+}

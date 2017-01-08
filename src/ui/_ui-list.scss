@@ -1,0 +1,81 @@
+.ui-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    transition: opacity 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    font-size: 14px;
+
+    @include breakpoint($bp-sm-up) {
+        font-size: 16px;
+    }
+
+    > li {
+        transition: background 0.2s ease-out;
+        background: var(--color-ui-list__item-background);
+        color: var(--color-ui-list__item-color);
+        line-height: 1.4;
+
+        .ui-mouse.ui-theme--custom & {
+            &:hover {
+                background: var(--color-ui-list__item-background-2);
+            }
+        }
+
+        // If the mouse helper class is present, enable hover states for the theme
+        .ui-mouse.ui-theme--dark & {
+            &:hover {
+                background: color(var(--color-ui-list__item-background) tint(95%));
+            }
+        }
+
+        // If the mouse helper class is present, enable hover states for the theme
+        .ui-mouse.ui-theme--light & {
+            &:hover {
+                background: color(var(--color-ui-list__item-background) shade(98%));
+            }
+        }
+
+        // If the touch helper class is present, enable zebra stripes for small screens
+        @include breakpoint($bp-md-down) {
+            @include each(2) {
+                .ui-touch.ui-theme--custom & {
+                    background: var(--color-ui-list__item-background-2);
+                }
+
+                .ui-touch.ui-theme--dark & {
+                    background: color(var(--color-ui-list__item-background) tint(95%));
+                }
+
+                .ui-touch.ui-theme--light & {
+                    background: color(var(--color-ui-list__item-background) shade(98%));
+                }
+            }
+        }
+    }
+
+    > li + li {
+        .ui-theme--custom & {
+            border-top: 1px solid var(--color-ui-delimiter);
+        }
+
+        .ui-theme--dark & {
+            border-top: 1px solid color(var(--color-ui-background) tint(85%));
+        }
+
+        .ui-theme--light & {
+            border-top: 1px solid color(var(--color-ui-background) shade(85%));
+        }
+    }
+
+    &--movies {
+       > li {
+            padding: 10px 0 25px;
+        }
+    }
+
+    &--shows {
+        > li {
+            padding: 4px 0;
+        }
+    }
+}

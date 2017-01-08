@@ -1,0 +1,57 @@
+// Setting box-sizing to inheritance
+// https://css-tricks.com/box-sizing/
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+// Resets and global styling here
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    font-size: 16px;
+    line-height: 1.4;
+    background: var(--color-ui-background);
+    color: var(--color-ui-text);
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'liga';
+}
+
+a {
+    text-decoration: none;
+}
+
+svg {
+    pointer-events: none;
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+// placeholder chrome/opera/safari
+::-webkit-input-placeholder { 
+    color: var(--color-ui-placeholder);
+    opacity: 1;
+}
+// placeholder firefox 19+
+::-moz-placeholder { 
+    color: var(--color-ui-placeholder);
+    opacity: 1;
+}
+// placeholder ie10+
+:-ms-input-placeholder {
+    color: var(--color-ui-placeholder);
+    opacity: 1;
+}
+
+object {
+    outline: 0;
+    margin: 0;
+    padding: 0;
+}

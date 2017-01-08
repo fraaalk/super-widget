@@ -1,0 +1,69 @@
+.ui-definition-list {
+
+    &--inline {
+        margin: 0;
+        font-size: 0;
+
+        dt {
+            display: inline;
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+
+            @include breakpoint($bp-sm-up) { 
+                font-size: 16px;
+            }
+
+            &:after {
+                content: ': ';
+            }
+        }
+
+        dd {
+            display: inline;
+            margin: 0;
+            font-size: 14px;
+            padding-right: 1.5em;
+            font-weight: 300;
+
+            a:not(:last-of-type):after,
+            span:not(:last-of-type):after {
+                content: ', ';
+                display: inline-block;
+            }
+
+            @include breakpoint($bp-sm-up) { 
+                font-size: 16px;
+            }
+        }
+    }
+    // &__description {
+
+    //     @include breakpoint($bp-sm-down) { 
+    //         .movie-info--short &  {
+    //             display: block;
+    //             padding: 0.2em 0;
+    //             margin: 0.2em 0;
+    //         }
+
+    //         .ui-theme--custom & {
+    //             border-bottom: 1px solid var(--color-ui-delimiter);
+    //         }
+
+    //         .ui-theme--dark & {
+    //             border-bottom: 1px solid color(var(--color-ui-background) tint(85%));
+    //         }
+
+    //         .ui-theme--light & {
+    //             border-bottom: 1px solid color(var(--color-ui-background) shade(85%));
+    //         }
+            
+    //         padding-bottom: 4px;
+    //     }
+
+    //     .movie-info--long & {
+    //         border-bottom: none;
+    //     }
+    // }
+    // }
+}

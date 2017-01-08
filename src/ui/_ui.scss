@@ -1,0 +1,271 @@
+// mixin to create the same border radius all over 
+// the project
+@mixin ui-corner( $position ) {
+    $ui-corner-radius: 3px !default;
+
+    @if ( $position == 'all' ) {
+        border-radius: $ui-corner-radius;
+    }
+
+    @if ( $position == 'left' ) {
+        border-top-left-radius: $ui-corner-radius;
+        border-bottom-left-radius: $ui-corner-radius;
+    }
+
+    @if ( $position == 'right' ) {
+        border-top-right-radius: $ui-corner-radius;
+        border-bottom-right-radius: $ui-corner-radius;
+    }
+
+    @if ( $position == 'top' ) {
+        border-top-left-radius: $ui-corner-radius;
+        border-top-right-radius: $ui-corner-radius;
+    }
+
+    @if ( $position == 'bottom' ) {
+        border-bottom-left-radius: $ui-corner-radius;
+        border-bottom-right-radius: $ui-corner-radius;
+    }
+}
+
+@mixin ui-button() {
+    align-items: center;
+    align-content: stretch;
+    border-style: solid;
+    border-color: transparent;
+    border-width: 1px;
+    display: flex;
+    font-size: 14px;
+    font-weight: inherit;
+    justify-content: center;
+    min-width: 35px;
+    outline: none;
+    text-decoration: none;
+    transition: background 0.2s ease-out;
+    padding: 4px 6px;
+    line-height: 1;
+    background: white;
+    margin: 0;
+
+    // make sure all childs of ui-button bubble to the button
+    * {
+        pointer-events: none;
+    }
+
+    @include breakpoint($bp-sm-up) {
+        font-size: 16px;
+    }
+
+    // Shrink the button on active state to simulate a little press
+    &:active:not(.is-active):not(.is-disabled):not(.is-inactive):hover {
+        // nice effect for click missing
+        box-shadow: inset 0px 0px 10px -2px rgba(255, 255, 255, 0.2);
+    }
+
+    // Touch feedback for touch devices
+    .ui-touch & {
+        // Disable the default touch behaviour
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    }
+
+    // Hover states for mouse devices
+    .ui-mouse & {
+        &:hover {
+            cursor: pointer;
+        }
+
+        &.is-inactive {
+            cursor: default;
+            user-select: none;
+        }
+
+        &.is-disabled {
+            cursor: not-allowed;
+        }
+    }
+}
+
+@mixin ui-aspect-ratio($width, $height) {
+    position: relative;
+
+    &:before {
+        display: block;
+        content: "";
+        width: 100%;
+        padding-top: ($height / $width) * 100%;
+    }
+
+    > * {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+    }
+}
+
+// clearfix mixin
+@mixin ui-clearfix() {
+    &:before,
+    &:after {
+        content: "";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
+}
+
+// mixin which resets radio buttons and checkboxes,
+// and make them stylable with 2 custom svgs
+@mixin ui-reset-checkbox-radio( $type ) {
+    overflow: hidden;
+    position: relative;
+
+    input:checked,
+    input:not(:checked) {
+        background: transparent;
+        position: absolute;
+        visibility: hidden;
+        margin:0;
+        padding:0;
+        clip: rect(0, 0, 0, 0);
+    }
+
+    input + label {
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        transition: color 0.3s ease-out;
+
+        img, 
+        svg {
+            pointer-events: none;
+            user-select: none;
+        }
+
+        // @TODO: remove temporary hardcoded color
+        p {
+            color: #394c58;
+        }
+    }
+
+    input:not(:checked) + label {
+        color: var(--color-ui-radiocheck);
+
+        .ui-#{$type}__icon--checked {
+            display: none;
+        }
+
+        &:hover {
+            .ui-mouse & {
+                color: color(var(--color-ui-radiocheck) a(80%));
+            }
+        }
+    }
+
+    input:checked + label {
+        color: var(--color-ui-radiocheck--checked);
+
+        .ui-#{$type}__icon--unchecked {
+            display: none;
+        }
+
+        &:hover {
+            .ui-mouse & {
+                color: color(var(--color-ui-radiocheck--checked) a(80%));
+            }
+        }
+    }
+
+    .ui-#{$type}__icon {
+        margin: 0 8px;
+        fill: currentColor;
+        flex-shrink: 0;
+        flex-grow: 0;
+        transform: scale(1, 1);
+    }
+}
+
+// mixin to style a form select
+@mixin ui-select() { 
+    position: relative;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    color: var(--color-ui-placeholder);
+
+    select,
+    svg {
+        cursor: pointer;
+    }
+
+    select {
+        @include ui-corner( all );
+        font-size: 16px;
+        line-height: 1.4;
+        appearance: none;
+        outline: none;
+        padding: 9px 46px 9px 10px;
+        border: none;
+        width: 100%;
+        color: inherit;
+    }
+
+    svg {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        right: 8px;
+        top: calc(50% - 14px);
+        fill: currentColor;
+    }
+}
+
+
+.ui {
+
+    // Helper class to add corners
+    &-corners {
+        @include ui-corner( all );
+
+        &-right {
+            @include ui-corner( right );
+        }
+        &-left {
+            @include ui-corner( left );
+        }
+        &-top {
+            @include ui-corner( top );
+        }
+        &-bottom {
+            @include ui-corner( bottom );
+        }
+        &-none {
+            border-radius: 0 !important;
+        }
+    }
+
+    // Helper class to keep a specific aspect ratio
+    &-aspect {
+        &-1-1 {
+            @include ui-aspect-ratio( 1, 1 );
+        }
+        &-5-7 {
+            @include ui-aspect-ratio( 5, 7 );
+        }
+        &-7-10 {
+            @include ui-aspect-ratio( 7, 10 );
+        }
+        &-16-9 {
+            @include ui-aspect-ratio( 16, 9 );
+        }
+    }
+}
+
