@@ -1,11 +1,14 @@
 <template>
   <div class="shows__view shows__view--shows">
     <ul class="ui-list ui-list--movies">
-      <li v-for="show in shows">
-        <a class="ui-link ui-link--silent grid grid--align-center" :href="show.url">
+      <li 
+        v-for="show in shows" 
+        v-if="now < show.start">
+        <a class="ui-link ui-link--silent grid grid--align-center" 
+          :href="show.url">
             <div class="grid__col-3 grid__col-sm-2 grid__cell">
-              <span>Sa 07.01.</span>
-              <span>{{ show.start | playTime }}</span>
+              <span>{{ show.start | localizeWeekDay }} {{ show.start | localizeDate }}</span>
+              <span>{{ show.start | localizeTime }}</span>
             </div>
             <div class="grid__col-6 grid__col-sm-7 grid__cell">
               {{ show.name }}
@@ -24,19 +27,25 @@
 </template>
 
 <script>
-import formatDate from 'date-format';
+import sortBy from 'lodash/sortBy';
+import { mapGetters } from 'vuex';
+
+import DataLayer from './../../services/data-layer';
+
+const _ = {
+  sortBy,
+};
 
 export default {
   computed: {
-    shows() {
-      const computedShows = window.dataLayer[0].shows;
+    // get now vuex store
+    ...mapGetters([
+      'now',
+      'today',
+    ]),
 
-      return computedShows;
-    },
-  },
-  filters: {
-    playTime(timestamp) {
-      return `${formatDate('hh', new Date(timestamp))}:${formatDate('mm', new Date(timestamp))}`;
+    shows() {
+      return _.sortBy(DataLayer.get('shows'), 'start');
     },
   },
 };

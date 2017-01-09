@@ -13,8 +13,9 @@ import groupBy from 'lodash/groupBy';
 import merge from 'lodash/merge';
 import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
+import DataLayer from './../../services/data-layer';
 
-import Movie from './Movie';
+import Movie from './../Movie';
 
 const _ = {
   groupBy,
@@ -26,12 +27,12 @@ const _ = {
 export default {
   computed: {
     movies() {
-      const computedMovies = _.map(_.groupBy(window.dataLayer[0].shows, 'name'), (show) => {
-        // make sure shows per move are sorted by start date (first show time now sits in the
+      const computedMovies = _.map(_.groupBy(DataLayer.get('shows'), 'name'), (show) => {
+        // make sure shows per movie are sorted by start date (first show time now sits in the
         // computedMovie object :) )
         const sortedShows = _.sortBy(show, 'start');
         const baseShow = sortedShows[0];
-        const baseMovie = window.dataLayer[0].movies[baseShow.movieId];
+        const baseMovie = DataLayer.get('movies')[baseShow.movieId];
         const computedMovie = {};
 
         _.merge(computedMovie, baseMovie, baseShow);

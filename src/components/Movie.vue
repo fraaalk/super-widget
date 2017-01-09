@@ -28,6 +28,15 @@
     <div class="grid__col-12 grid__col-sm-9 grid__col-md-10 grid--order-4 grid--order-sm-3">
       <div class="carousel carousel--3 carousel--sm-4 carousel--md-5 carousel--lg-7">
 
+        <button type="button" rel="prev" data-carousel-button class="ui-button ui-button--secondary ui-corners-left align-self-start is-disabled">
+          <div class="ui-button__inner">
+            <svg class="ui-button__icon">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" 
+                xlink:href="#svg-keyboard_arrow_left"></use>
+            </svg>
+          </div>
+        </button>
+
         <div class="carousel__wrapper">
           <ul class="carousel__stage is-set" data-carousel-stage>
             <li 
@@ -62,6 +71,15 @@
             </li>
           </ul>
         </div>
+
+        <button type="button" rel="next" data-carousel-button class="ui-button ui-button--secondary ui-corners-right align-self-start is-disabled">
+          <div class="ui-button__inner">
+            <svg class="ui-button__icon">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" 
+                xlink:href="#svg-keyboard_arrow_right"></use>
+            </svg>
+          </div>
+        </button>
       </div>
     </div>
 
