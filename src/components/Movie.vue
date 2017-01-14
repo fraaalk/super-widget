@@ -16,7 +16,9 @@
                   <img class="ui-image ui-image--responsive ui-image--lazyload" :src="'https://www.kinoheld.de' + movie.lazyImage" :alt="movie.name">
                 </template>
                 <template v-else>
-                    <svg class="ui-image ui-image--responsive ui-image--placeholder" viewBox="0 0 49.7 49.7"><path d="M46.3 24.8c0 11.9-9.6 21.5-21.5 21.5-11.8 0-21.4-9.6-21.4-21.5C3.4 13 13 3.4 24.8 3.4c11.9 0 21.5 9.6 21.5 21.4zM24.6 6.2c-3.4 0-6.2 2.8-6.2 6.2s2.8 6.2 6.2 6.2 6.2-2.8 6.2-6.2c0-3.4-2.8-6.2-6.2-6.2zM12.4 15c-3.4 0-6.2 2.8-6.2 6.2s2.8 6.2 6.2 6.2 6.2-2.8 6.2-6.2-2.8-6.2-6.2-6.2zm4.8 13.5c-3.4 0-6.2 2.8-6.2 6.2s2.8 6.2 6.2 6.2 6.2-2.8 6.2-6.2c0-3.4-2.7-6.2-6.2-6.2zm14.8-.1c-3.4 0-6.2 2.8-6.2 6.2s2.8 6.2 6.2 6.2 6.2-2.8 6.2-6.2c0-3.5-2.8-6.2-6.2-6.2zM37.4 15c-3.4 0-6.2 2.8-6.2 6.2s2.8 6.2 6.2 6.2c3.4 0 6.2-2.8 6.2-6.2S40.8 15 37.4 15zm-12.3 6.3c-1.8 0-3.3 1.5-3.3 3.3s1.5 3.3 3.3 3.3 3.3-1.5 3.3-3.3c0-1.8-1.5-3.3-3.3-3.3z"/></svg>
+                  <svg class="ui-image ui-image--responsive ui-image--placeholder">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-movieroll"></use>
+                  </svg>
                 </template>
               </div>
             </div>
@@ -26,61 +28,42 @@
     </header>
 
     <div class="grid__col-12 grid__col-sm-9 grid__col-md-10 grid--order-4 grid--order-sm-3">
-      <div class="carousel carousel--3 carousel--sm-4 carousel--md-5 carousel--lg-7">
+      <kh-carousel 
+        :slidesDefault="slidesDefault"
+        :slidesResponsive="slidesResponsive"
+        :slidesTotal="schedule.length"
+        initialClasses="carousel--3 carousel--sm-4 carousel--md-5 carousel--lg-7">
+        <li 
+          class="schedule carousel__slide"
+          v-for="(day, index) in schedule"
+          :class="{'is-ref': index == schedule.length - 1}">
 
-        <button type="button" rel="prev" data-carousel-button class="ui-button ui-button--secondary ui-corners-left align-self-start is-disabled">
-          <div class="ui-button__inner">
-            <svg class="ui-button__icon">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" 
-                xlink:href="#svg-keyboard_arrow_left"></use>
-            </svg>
+          <div class="ui-button ui-button--secondary is-inactive">
+            <template v-if="today == day.timestamp">
+              <strong>Heute</strong>
+            </template>
+            <template v-else>
+              {{ day.timestamp | localizeWeekDay }} {{ day.timestamp | localizeDate }}
+            </template>
           </div>
-        </button>
 
-        <div class="carousel__wrapper">
-          <ul class="carousel__stage is-set" data-carousel-stage>
-            <li 
-              class="schedule carousel__slide"
-              v-for="(day, index) in schedule"
-              :class="{'is-ref': index == schedule.length - 1}">
-
-              <div class="ui-button ui-button--secondary is-inactive">
-                <template v-if="today == day.timestamp">
-                  <strong>Heute</strong>
-                </template>
-                <template v-else>
-                  {{ day.timestamp | localizeWeekDay }} {{ day.timestamp | localizeDate }}
-                </template>
-              </div>
-
-              <ul class="schedule__times">
-                <li v-for="(show, time) in day.shows">
-                  <a v-if="show.length"
-                     class="ui-button ui-button--cta" 
-                     :href="show[0].url"
-                     :class="{'is-disabled': now >= show[0].start}">
-                    {{ time }}
-                  </a>
-                  <span 
-                    v-if="!show.length"
-                    class="ui-button ui-button--cta is-disabled">
-                    -
-                  </span>
-                </li>
-              </ul>
+          <ul class="schedule__times">
+            <li v-for="(show, time) in day.shows">
+              <a v-if="show.length"
+                 class="ui-button ui-button--cta" 
+                 :href="show[0].url"
+                 :class="{'is-disabled': now >= show[0].start}">
+                {{ time }}
+              </a>
+              <span 
+                v-if="!show.length"
+                class="ui-button ui-button--cta is-disabled">
+                -
+              </span>
             </li>
           </ul>
-        </div>
-
-        <button type="button" rel="next" data-carousel-button class="ui-button ui-button--secondary ui-corners-right align-self-start is-disabled">
-          <div class="ui-button__inner">
-            <svg class="ui-button__icon">
-              <use xmlns:xlink="http://www.w3.org/1999/xlink" 
-                xlink:href="#svg-keyboard_arrow_right"></use>
-            </svg>
-          </div>
-        </button>
-      </div>
+        </li>
+      </kh-carousel>
     </div>
 
 
@@ -123,6 +106,16 @@ import Carousel from './Carousel';
 
 export default {
   props: ['movie'],
+  data() {
+    return {
+      slidesDefault: 3,
+      slidesResponsive: {
+        sm: 4,
+        md: 5,
+        lg: 7,
+      },
+    };
+  },
   computed: {
     // get today and days array from vuex store
     ...mapGetters([

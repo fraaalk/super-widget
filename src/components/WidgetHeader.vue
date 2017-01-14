@@ -1,11 +1,19 @@
 <template>
   <header class="widget-header">
-    <nav class="widget-header__navigation" :class="{ 'is-visible': isMenuVisible }">
-        <img class="widget-header__logo" :src="logo">
-
+    <nav 
+      class="widget-header__navigation" 
+      :class="{ 'is-visible': isMenuVisible }">
+        <img 
+          class="widget-header__logo" 
+          :src="logo">
         <ul v-if="isMenuVisible">
           <li v-for="item in menu"> 
-            <a :href="item.url" :title="item.name" target="_blank">{{ item.name }}</a>
+            <a 
+              :href="item.url" 
+              :title="item.name" 
+              target="_blank">
+                {{ item.name }}
+            </a>
           </li>
         </ul>
     </nav>
@@ -16,23 +24,32 @@
         :class="{ 'is-active': isMenuVisible }"
         @click="isMenuVisible = !isMenuVisible">
         <div class="ui-button__inner">
-              <svg viewBox="0 0 24 24">
-                <transition mode="out-in" name="fade">
-                  <path v-if="isMenuVisible" d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z" />
-                  <path v-else d="M3,6H21V8H3V6M3,11H21V13H3V11M3,16H21V18H3V16Z" />
-                </transition>
-              </svg>
-          </svg>
+          <kh-svg-icon
+            icon-class="ui-button__icon"
+            icon-xlink="#svg-close"
+            v-if="isMenuVisible">
+          </kh-svg-icon>
+          <kh-svg-icon
+            icon-class="ui-button__icon"
+            icon-xlink="#svg-menu"
+            v-else>
+          </kh-svg-icon>
         </div>
     </button>
 
     <transition name="fade">
-        <div class="widget-header__backdrop" v-if="isMenuVisible" @click="isMenuVisible = false"></div>
-      </transition>
+      <div 
+        class="widget-header__backdrop" 
+        v-if="isMenuVisible" 
+        @click="isMenuVisible = false">
+      </div>
+    </transition>
   </header>
 </template>
 
 <script>
+import SVGIcon from './SVGIcon';
+
 export default {
   data() {
     return {
@@ -65,6 +82,9 @@ export default {
     }];
 
     this.logo = 'http://www.munich-startup.de/wp-content/uploads/2015/08/kinoheld_logo_sw-320x136.jpg';
+  },
+  components: {
+    'kh-svg-icon': SVGIcon,
   },
 };
 </script>

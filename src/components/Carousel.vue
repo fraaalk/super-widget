@@ -1,8 +1,88 @@
 <template>
-  
+  <div 
+    class="carousel"
+    :class="carouselClasses">
+    {{ currentSlide }}
+    <button 
+      type="button" 
+      class="ui-button ui-button--secondary ui-corners-left align-self-start"
+      :class="{'is-disabled': currentSlide === 0}"
+      @click='slidePrev'>
+      <div class="ui-button__inner">
+        <kh-svg-icon 
+          icon-class="ui-button__icon" 
+          icon-xlink="#svg-keyboard_arrow_left">
+        </kh-svg-icon>
+      </div>
+    </button>
+
+    <div class="carousel__wrapper">
+      <ul class="carousel__stage is-set" data-carousel-stage>
+        <slot></slot>
+      </ul>
+    </div>
+
+    <button 
+      type="button" 
+      class="ui-button ui-button--secondary ui-corners-right align-self-start"
+      :class="{'is-disabled': currentSlide === slidesTotal}"
+      @click="slideNext">
+      <div class="ui-button__inner">
+        <kh-svg-icon 
+          icon-class="ui-button__icon" 
+          icon-xlink="#svg-keyboard_arrow_right">
+        </kh-svg-icon>
+      </div>
+    </button>
+  </div>
 </template>
 
 <script>
+import SVGIcon from './SVGIcon';
+
+export default {
+  props: [
+    'initialClasses',
+    'slidesDefault',
+    'slidesResponsive',
+    'slidesTotal',
+  ],
+  data() {
+    return {
+      currentSlide: 0,
+    };
+  },
+  computed: {
+    carouselClasses() {
+      let carouselClasses = `carousel--${this.slidesDefault}`;
+
+      Object.keys(this.slidesResponsive).forEach((key) => {
+        carouselClasses += ` carousel--${key}-${this.slidesResponsive[key]}`;
+      });
+
+      return carouselClasses;
+    },
+  },
+  methods: {
+    slidePrev() {
+      this.currentSlide =
+        this.currentSlide > 0
+        ? this.currentSlide -= 1
+        : 0;
+    },
+    slideNext() {
+      this.currentSlide =
+        this.currentSlide < this.slidesTotal
+        ? this.currentSlide += 1
+        : this.slidesTotal;
+    },
+  },
+  components: {
+    'kh-svg-icon': SVGIcon,
+  },
+  created() {
+  },
+};
 </script>
 
 <style lang="scss">

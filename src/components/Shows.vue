@@ -14,10 +14,10 @@
               :title="button.title"
               :class="{'is-active': (activeLayout == button.key)}"
               @click="setLayout(button.key)">
-                <svg class="ui-button__icon">
-                  <use xmlns:xlink="http://www.w3.org/1999/xlink" 
-                    :xlink:href="button.icon"></use>
-                </svg>
+                <kh-svg-icon
+                  icon-class="ui-button__icon"
+                  :icon-xlink="button.icon">
+                </kh-svg-icon>
               </button>
           </div>
         </div>
@@ -34,6 +34,7 @@
 <script>
 import formatDate from 'date-format';
 
+import SVGIcon from './SVGIcon';
 import Movies from './../components/shows/shows-by-movie';
 import Shows from './../components/shows/shows-by-show';
 import Days from './../components/shows/shows-by-day';
@@ -65,6 +66,7 @@ export default {
     'kh-shows-by-movies': Movies,
     'kh-shows-by-shows': Shows,
     'kh-shows-by-days': Days,
+    'kh-svg-icon': SVGIcon,
   },
   computed: {
     activeLayout() {
