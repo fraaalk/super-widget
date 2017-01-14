@@ -5,7 +5,7 @@ import formatDate from 'date-format';
 import Vue from 'vue';
 
 import App from './App';
-import { store } from './store/store';
+import Store from './services/store';
 
 Vue.filter('localizeTime',
   timestamp => `${formatDate('hh', new Date(timestamp))}:${formatDate('mm', new Date(timestamp))}`
@@ -22,6 +22,6 @@ Vue.filter('localizeWeekDay', (timestamp) => {
 
 new Vue({ // eslint-disable-line no-new
   el: '#widget',
-  store,
+  store: Store,
   render: h => h(App),
 });

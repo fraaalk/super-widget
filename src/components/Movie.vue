@@ -31,13 +31,12 @@
       <kh-carousel 
         :slidesDefault="slidesDefault"
         :slidesResponsive="slidesResponsive"
-        :slidesTotal="schedule.length"
-        initialClasses="carousel--3 carousel--sm-4 carousel--md-5 carousel--lg-7">
-        <li 
-          class="schedule carousel__slide"
-          v-for="(day, index) in schedule"
-          :class="{'is-ref': index == schedule.length - 1}">
+        :slidesTotal="schedule.length">
 
+        <kh-carousel-slide 
+          v-for="(day, index) in schedule"
+          :slideIndex="index"
+          :slidesTotal="schedule.length">
           <div class="ui-button ui-button--secondary is-inactive">
             <template v-if="today == day.timestamp">
               <strong>Heute</strong>
@@ -50,9 +49,9 @@
           <ul class="schedule__times">
             <li v-for="(show, time) in day.shows">
               <a v-if="show.length"
-                 class="ui-button ui-button--cta" 
-                 :href="show[0].url"
-                 :class="{'is-disabled': now >= show[0].start}">
+                class="ui-button ui-button--cta" 
+                :href="show[0].url"
+                :class="{'is-disabled': now >= show[0].start}">
                 {{ time }}
               </a>
               <span 
@@ -62,7 +61,8 @@
               </span>
             </li>
           </ul>
-        </li>
+        </kh-carousel-slide>
+
       </kh-carousel>
     </div>
 
@@ -84,7 +84,7 @@
               <!-- <?php echo t('Language'); ?><% if (show.subtitle) { %> / <?php echo t('Subtitle'); ?><% } %> -->
             </dt>
             <dd>
-              {{ movie.language }} <template v-if="movie.subtitle">  / {{ movie.subtitle }}</template>
+              {{ movie.language }} <template v-if="movie.subtitle"> / {{ movie.subtitle }}</template>
             </dd>
           </template>
           <template v-if="movie.genre">
@@ -102,7 +102,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import formatDate from 'date-format';
-import Carousel from './Carousel';
+import Carousel from './carousel/carousel';
+import CarouselSlide from './carousel/carousel-slide';
 
 export default {
   props: ['movie'],
@@ -157,6 +158,7 @@ export default {
   },
   components: {
     'kh-carousel': Carousel,
+    'kh-carousel-slide': CarouselSlide,
   },
 };
 </script>

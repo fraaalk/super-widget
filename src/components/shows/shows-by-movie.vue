@@ -2,7 +2,9 @@
   <div class="shows__view shows__view--movies">
     <ul class="ui-list ui-list--movies">
       <li v-for="movie in movies">
-        <kh-movie :movie="movie"></kh-movie>
+        <kh-movie 
+          :movie="movie">
+        </kh-movie>
       </li>
     </ul>
   </div>
@@ -38,7 +40,6 @@ export default {
         _.merge(computedMovie, baseMovie, baseShow);
         computedMovie.shows = sortedShows;
 
-       // console.log( computedMovie )
         return computedMovie;
       });
 
