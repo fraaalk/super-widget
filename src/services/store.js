@@ -23,7 +23,20 @@ export default new Vuex.Store({
         component.id === payload.id
       );
 
+      const newSlide = payload.newSlide;
+      const slidesTotal = carousel[0].data.slidesTotal;
+      let ref = carousel[0].data.slidesTotal - 1;
+
+      if (newSlide === 0) {
+        ref = slidesTotal - 1;
+      } else if (newSlide === 1 || newSlide > slidesTotal) {
+        ref = 0;
+      } else {
+        ref = newSlide - 1;
+      }
+
       carousel[0].data.currentSlide = payload.newSlide;
+      carousel[0].data.refSlide = ref;
     },
   },
   getters: {

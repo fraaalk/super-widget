@@ -1,7 +1,6 @@
 <template>
   <div 
     class="carousel"
-    :id="id"
     :class="carouselClasses">
     {{ currentSlide }}
     <button 
@@ -39,7 +38,7 @@
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
+// import { mapMutations } from 'vuex';
 import SVGIcon from './../SVGIcon';
 
 export default {
@@ -48,17 +47,17 @@ export default {
     'slidesDefault',
     'slidesResponsive',
     'slidesTotal',
+    'componentId',
   ],
   data() {
     return {
-      id: null,
       slides: [],
     };
   },
   computed: {
     currentSlide() {
       const carousel = this.$store.state.components.filter(component =>
-        component.id === this.id
+        component.id === this.componentId
       );
       return carousel[0].data.currentSlide;
     },
@@ -74,20 +73,25 @@ export default {
     },
   },
   methods: {
-    ...mapMutations([
-      'setSlide',
-    ]),
     slidePrev() {
+      if (this.currentSlide === 0) {
+        return;
+      }
+
       this.$store.commit('SET_SLIDE', {
-        id: this.id,
+        id: this.componentId,
         newSlide: this.currentSlide > 0
           ? this.currentSlide -= 1
           : 0,
       });
     },
     slideNext() {
+      if (this.currentSlide === this.slidesTotal) {
+        return;
+      }
+
       this.$store.commit('SET_SLIDE', {
-        id: this.id,
+        id: this.componentId,
         newSlide: this.currentSlide < this.slidesTotal
           ? this.currentSlide += 1
           : this.slidesTotal,
@@ -99,13 +103,12 @@ export default {
   },
   created() {
     // create a unique id
-    this.id = `carousel-${this._uid}`;
-
     this.$store.commit('ADD_COMPONENT', {
-      id: this.id,
+      id: this.componentId,
       data: {
         currentSlide: 0,
         slidesTotal: this.slidesTotal,
+        refSlide: this.slidesTotal - 1,
       },
     });
   },

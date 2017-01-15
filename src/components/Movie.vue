@@ -31,12 +31,13 @@
       <kh-carousel 
         :slidesDefault="slidesDefault"
         :slidesResponsive="slidesResponsive"
-        :slidesTotal="schedule.length">
+        :slidesTotal="schedule.length"
+        :componentId="carouselId">
 
         <kh-carousel-slide 
           v-for="(day, index) in schedule"
           :slideIndex="index"
-          :slidesTotal="schedule.length">
+          :componentId="carouselId">
           <div class="ui-button ui-button--secondary is-inactive">
             <template v-if="today == day.timestamp">
               <strong>Heute</strong>
@@ -118,6 +119,11 @@ export default {
     };
   },
   computed: {
+    // creates a unique identifier to store the carousek state in vuex
+    carouselId() {
+      return `movie-${this._uid}-carousel`;
+    },
+
     // get today and days array from vuex store
     ...mapGetters([
       'now',
