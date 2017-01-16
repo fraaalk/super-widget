@@ -6,7 +6,7 @@
     <button 
       type="button" 
       class="ui-button ui-button--secondary ui-corners-left align-self-start"
-      :class="{'is-disabled': currentSlide === 0}"
+      :class="{'is-disabled': !slidePrevEnabled}"
       @click='slidePrev'>
       <div class="ui-button__inner">
         <kh-svg-icon 
@@ -17,7 +17,9 @@
     </button>
 
     <div class="carousel__wrapper">
-      <ul class="carousel__stage is-set" data-carousel-stage>
+      <ul 
+        class="carousel__stage"
+        :class="stageClasses">
         <slot></slot>
       </ul>
     </div>
@@ -25,7 +27,7 @@
     <button 
       type="button" 
       class="ui-button ui-button--secondary ui-corners-right align-self-start"
-      :class="{'is-disabled': currentSlide === totalSlides}"
+      :class="{'is-disabled': !slideNextEnabled}"
       @click="slideNext">
       <div class="ui-button__inner">
         <kh-svg-icon 
@@ -38,10 +40,15 @@
 </template>
 
 <script>
-// import { mapMutations } from 'vuex';
 import SVGIcon from './../SVGIcon';
 
 export default {
+  data() {
+    return {
+      isAnimating: false,
+      visibleSlides: 5,
+    };
+  },
   props: [
     'initialClasses',
     'slidesDefault',
@@ -69,36 +76,65 @@ export default {
 
       return carouselClasses;
     },
+
+    slidePrevEnabled() {
+      return this.currentSlide > 0;
+    },
+
+    slideNextEnabled() {
+      return this.totalSlides - (this.visibleSlides + this.currentSlide) > 0;
+    },
+
+    stageClasses() {
+      return !this.isAnimating ? 'is-set' : '';
+    },
   },
   methods: {
     slide(isReversing) {
+      const slides = this.slides;
+      const totalSlides = this.totalSlides;
+      let currentSlide = this.currentSlide;
       let newSlide;
       let refSlide;
-      const slides = this.slides;
 
       if (isReversing) {
-        newSlide = this.currentSlide > 0
-          ? this.currentSlide -= 1
+        newSlide = currentSlide > 0
+          ? currentSlide -= 1
           : 0;
       } else {
-        newSlide = this.currentSlide < this.totalSlides
-          ? this.currentSlide += 1
-          : this.totalSlides;
+        newSlide = currentSlide < totalSlides
+          ? currentSlide += 1
+          : totalSlides;
       }
 
       if (newSlide === 0) {
-        refSlide = this.totalSlides - 1;
-      } else if (newSlide === 1 || newSlide > this.totalSlides) {
+        refSlide = totalSlides - 1;
+      } else if (newSlide === 1 || newSlide > totalSlides) {
         refSlide = 0;
       } else {
         refSlide = newSlide - 1;
       }
 
-      slides.forEach((slide, index) => {
-        slides[index].class = (index === refSlide)
-          ? 'is-ref'
-          : '';
-      });
+      let i;
+      let j;
+      for (i = 0; i < this.slides.length; i += 1) {
+        const pointer = (i + refSlide) % this.slides.length;
+
+        if (pointer === refSlide) {
+          this.slides[pointer].styles = 'order: 1;';
+          this.slides[pointer].class = 'is-ref';
+        } else {
+          this.slides[pointer].styles = `order: ${j}`;
+          this.slides[pointer].class = '';
+        }
+
+        j += 1;
+      }
+
+      this.isAnimating = true;
+      window.setTimeout(() => {
+        this.isAnimating = false;
+      }, 50);
 
       this.$store.commit('UPDATE_COMPONENT', {
         componentId: this.componentId,
@@ -106,21 +142,27 @@ export default {
           currentSlide: newSlide,
           refSlide,
           slides,
-          totalSlides: this.totalSlides,
+          totalSlides,
         },
       });
     },
     slidePrev() {
-      this.slide(true);
+      if (this.slidePrevEnabled) {
+        this.slide(true);
+      }
     },
     slideNext() {
-      this.slide(false);
+      if (this.slideNextEnabled) {
+        this.slide(false);
+      }
     },
   },
   components: {
     'kh-svg-icon': SVGIcon,
   },
   created() {
+    // temporary var move to viewport service soon
+
     // create a unique id
     this.$store.commit('ADD_COMPONENT', {
       componentId: this.componentId,
