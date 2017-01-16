@@ -15,36 +15,36 @@ export default {
     'componentId',
   ],
   computed: {
-    // returns the carousel instance from vuex
-    carousel() {
-      const carousel = this.$store.state.components.filter(component =>
-        component.id === this.componentId
+    slide() {
+      const slide = this.$store.state.components[this.componentId].slides.filter(key =>
+        key.id === this._uid
       );
-
-      return carousel[0].data;
+      return slide[0];
     },
-    currentSlide() {
-      return this.carousel.currentSlide;
-    },
-    refSlide() {
-      return this.carousel.refSlide;
-    },
-    slidesTotal() {
-      return this.carousel.slidesTotal;
+    ref() {
+      return this.$store.state.components[this.componentId].refSlide;
     },
   },
   methods: {
     getClasses() {
-      return this.slideIndex === this.refSlide
-        ? 'is-ref'
-        : '';
+      return this.slide.class;
     },
 
     getStyles() {
-      return this.slideIndex === this.refSlide
-        ? 'order: 1;'
-        : `order: ${(this.slideIndex - this.refSlide) + 1};`;
+      return this.slide.styles;
     },
+  },
+  created() {
+    this.$store.commit('ADD_SLIDE', {
+      carouselId: this.componentId,
+      data: {
+        id: this._uid,
+        styles: '',
+        class: this.slideIndex === this.ref
+          ? 'is-ref'
+          : '',
+      },
+    });
   },
 };
 </script>

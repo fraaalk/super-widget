@@ -42,8 +42,7 @@ export default {
 
         return computedMovie;
       });
-
-      return computedMovies;
+      return [computedMovies[0]];
     },
   },
   components: {

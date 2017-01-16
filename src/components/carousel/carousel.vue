@@ -25,7 +25,7 @@
     <button 
       type="button" 
       class="ui-button ui-button--secondary ui-corners-right align-self-start"
-      :class="{'is-disabled': currentSlide === slidesTotal}"
+      :class="{'is-disabled': currentSlide === totalSlides}"
       @click="slideNext">
       <div class="ui-button__inner">
         <kh-svg-icon 
@@ -46,20 +46,18 @@ export default {
     'initialClasses',
     'slidesDefault',
     'slidesResponsive',
-    'slidesTotal',
     'componentId',
+    'totalSlides',
   ],
-  data() {
-    return {
-      slides: [],
-    };
-  },
   computed: {
+    carousel() {
+      return this.$store.state.components[this.componentId];
+    },
     currentSlide() {
-      const carousel = this.$store.state.components.filter(component =>
-        component.id === this.componentId
-      );
-      return carousel[0].data.currentSlide;
+      return this.carousel.currentSlide;
+    },
+    slides() {
+      return this.carousel.slides;
     },
 
     carouselClasses() {
@@ -73,29 +71,50 @@ export default {
     },
   },
   methods: {
-    slidePrev() {
-      if (this.currentSlide === 0) {
-        return;
+    slide(isReversing) {
+      let newSlide;
+      let refSlide;
+      const slides = this.slides;
+
+      if (isReversing) {
+        newSlide = this.currentSlide > 0
+          ? this.currentSlide -= 1
+          : 0;
+      } else {
+        newSlide = this.currentSlide < this.totalSlides
+          ? this.currentSlide += 1
+          : this.totalSlides;
       }
 
-      this.$store.commit('SET_SLIDE', {
-        id: this.componentId,
-        newSlide: this.currentSlide > 0
-          ? this.currentSlide -= 1
-          : 0,
+      if (newSlide === 0) {
+        refSlide = this.totalSlides - 1;
+      } else if (newSlide === 1 || newSlide > this.totalSlides) {
+        refSlide = 0;
+      } else {
+        refSlide = newSlide - 1;
+      }
+
+      slides.forEach((slide, index) => {
+        slides[index].class = (index === refSlide)
+          ? 'is-ref'
+          : '';
+      });
+
+      this.$store.commit('UPDATE_COMPONENT', {
+        componentId: this.componentId,
+        data: {
+          currentSlide: newSlide,
+          refSlide,
+          slides,
+          totalSlides: this.totalSlides,
+        },
       });
     },
+    slidePrev() {
+      this.slide(true);
+    },
     slideNext() {
-      if (this.currentSlide === this.slidesTotal) {
-        return;
-      }
-
-      this.$store.commit('SET_SLIDE', {
-        id: this.componentId,
-        newSlide: this.currentSlide < this.slidesTotal
-          ? this.currentSlide += 1
-          : this.slidesTotal,
-      });
+      this.slide(false);
     },
   },
   components: {
@@ -104,11 +123,12 @@ export default {
   created() {
     // create a unique id
     this.$store.commit('ADD_COMPONENT', {
-      id: this.componentId,
+      componentId: this.componentId,
       data: {
         currentSlide: 0,
-        slidesTotal: this.slidesTotal,
-        refSlide: this.slidesTotal - 1,
+        totalSlides: this.totalSlides,
+        refSlide: this.totalSlides - 1,
+        slides: [],
       },
     });
   },

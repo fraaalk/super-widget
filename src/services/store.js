@@ -8,35 +8,17 @@ export default new Vuex.Store({
     now: Date.now(),
     activeLayout: 'movies',
     days: [],
-    components: [],
+    components: {},
   },
   mutations: {
     ADD_COMPONENT(state, payload) {
-      const newComponent = {
-        id: payload.id,
-        data: payload.data,
-      };
-      state.components.push(newComponent);
+      Vue.set(state.components, payload.componentId, payload.data);
     },
-    SET_SLIDE(state, payload) {
-      const carousel = state.components.filter(component =>
-        component.id === payload.id
-      );
-
-      const newSlide = payload.newSlide;
-      const slidesTotal = carousel[0].data.slidesTotal;
-      let ref = carousel[0].data.slidesTotal - 1;
-
-      if (newSlide === 0) {
-        ref = slidesTotal - 1;
-      } else if (newSlide === 1 || newSlide > slidesTotal) {
-        ref = 0;
-      } else {
-        ref = newSlide - 1;
-      }
-
-      carousel[0].data.currentSlide = payload.newSlide;
-      carousel[0].data.refSlide = ref;
+    UPDATE_COMPONENT(state, payload) {
+      state.components[payload.componentId] = payload.data;
+    },
+    ADD_SLIDE(state, payload) {
+      state.components[payload.carouselId].slides.push(payload.data);
     },
   },
   getters: {

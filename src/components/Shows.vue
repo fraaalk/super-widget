@@ -80,7 +80,7 @@ export default {
   },
   created() {
     this.generateDays(Date.now(), DataLayer.get('shows.47544.start'));
-    this.tickNow();
+    // this.tickNow();
   },
   methods: {
     // sets the layout

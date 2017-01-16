@@ -31,7 +31,7 @@
       <kh-carousel 
         :slidesDefault="slidesDefault"
         :slidesResponsive="slidesResponsive"
-        :slidesTotal="schedule.length"
+        :totalSlides="schedule.length"
         :componentId="carouselId">
 
         <kh-carousel-slide 
