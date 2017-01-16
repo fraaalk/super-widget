@@ -116,7 +116,7 @@ export default {
       }
 
       let i;
-      let j;
+      let j = 1;
       for (i = 0; i < this.slides.length; i += 1) {
         const pointer = (i + refSlide) % this.slides.length;
 
