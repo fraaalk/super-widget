@@ -9,8 +9,12 @@ export default new Vuex.Store({
     activeLayout: 'movies',
     days: [],
     components: {},
+    viewport: {},
   },
   mutations: {
+    UPDATE_VIEWPORT(state, payload) {
+      state.viewport = payload;
+    },
     ADD_COMPONENT(state, payload) {
       Vue.set(state.components, payload.componentId, payload.data);
     },

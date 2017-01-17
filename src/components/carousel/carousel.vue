@@ -2,7 +2,6 @@
   <div 
     class="carousel"
     :class="carouselClasses">
-    {{ currentSlide }}
     <button 
       type="button" 
       class="ui-button ui-button--secondary ui-corners-left align-self-start"
@@ -47,17 +46,21 @@ export default {
     return {
       isAnimating: false,
       isReversing: false,
-      visibleSlides: 5,
     };
   },
   props: [
     'initialClasses',
-    'slidesDefault',
-    'slidesResponsive',
+    'slidesPerPage',
     'componentId',
     'totalSlides',
   ],
   computed: {
+    breakpoint() {
+      return this.$store.state.viewport.breakpoint;
+    },
+    visibleSlides() {
+      return this.slidesPerPage[this.breakpoint];
+    },
     carousel() {
       return this.$store.state.components[this.componentId];
     },
@@ -69,13 +72,7 @@ export default {
     },
 
     carouselClasses() {
-      let carouselClasses = `carousel--${this.slidesDefault}`;
-
-      Object.keys(this.slidesResponsive).forEach((key) => {
-        carouselClasses += ` carousel--${key}-${this.slidesResponsive[key]}`;
-      });
-
-      return carouselClasses;
+      return `carousel--${this.slidesPerPage[this.breakpoint]}`;
     },
 
     slidePrevEnabled() {
@@ -221,22 +218,7 @@ export default {
             transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
 
-        // 3 default
-        .carousel--3 & {
-            left: -33.33333333333333%;
-            transform: translateX(33.33333333333333%);
-
-            &.is-reversing {
-                transform: translateX(-33.33333333333333%);
-            }
-
-            &.is-set {
-                transform: none;
-                transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-            }
-        }
-
-        // 3 default
+        // 2
         .carousel--2 & {
             left: -50%;
             transform: translateX(50%);
@@ -251,98 +233,78 @@ export default {
             }
         }
 
-        @include breakpoint( $bp-xs-up ) { 
-            .carousel--xs-3 & {
-                left: -33.33333333333333%;
-                transform: translateX(33.33333333333333%);
+        // 3
+        .carousel--3 & {
+            left: -33.33333333333333%;
+            transform: translateX(33.33333333333333%);
 
-                &.is-reversing {
-                    transform: translateX(-33.33333333333333%);
-                }
+            &.is-reversing {
+                transform: translateX(-33.33333333333333%);
+            }
 
-                &.is-set {
-                    transform: none;
-                    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-                }
+            &.is-set {
+                transform: none;
+                transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             }
         }
 
-        // 600+
-        @include breakpoint( $bp-sm-up ) { 
-            .carousel--sm-4 & {
-                left: -25%;
-                transform: translateX(25%);
+        // 4
+        .carousel--4 & {
+            left: -25%;
+            transform: translateX(25%);
 
-                &.is-reversing {
-                    transform: translateX(-25%);
-                }
-
-                &.is-set {
-                    transform: none;
-                    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-                }
+            &.is-reversing {
+                transform: translateX(-25%);
             }
 
-            .carousel--sm-5 & {
-                left: -20%;
-                transform: translateX(20%);
-
-                &.is-reversing {
-                    transform: translateX(-20%);
-                }
-
-                &.is-set {
-                    transform: none;
-                    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-                }
+            &.is-set {
+                transform: none;
+                transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             }
         }
 
-        // 768+
-        @include breakpoint( $bp-md-up ) { 
-            .carousel--md-5 & {
-                left: -20%;
-                transform: translateX(20%);
+        // 5
+        .carousel--5 & {
+            left: -20%;
+            transform: translateX(20%);
 
-                &.is-reversing {
-                    transform: translateX(-20%);
-                }
+            &.is-reversing {
+                transform: translateX(-20%);
+            }
 
-                &.is-set {
-                    transform: none;
-                    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-                }
+            &.is-set {
+                transform: none;
+                transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             }
         }
 
-        // 992+
-        @include breakpoint( $bp-lg-up ) { 
-            .carousel--lg-6 & {
-                left: -16.6666666667%;
-                transform: translateX(16.6666666667%);
+        // 6
+        .carousel--6 & {
+            left: -16.6666666667%;
+            transform: translateX(16.6666666667%);
 
-                &.is-reversing {
-                    transform: translateX(-16.6666666667%);
-                }
-
-                &.is-set {
-                    transform: none;
-                    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-                }
+            &.is-reversing {
+                transform: translateX(-16.6666666667%);
             }
 
-            .carousel--lg-7 & {
-                left: -14.28571428571429%;
-                transform: translateX(14.28571428571429%);
+            &.is-set {
+                transform: none;
+                transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            }
+        }
 
-                &.is-reversing {
-                    transform: translateX(-14.28571428571429%);
-                }
+        // 7
+        .carousel--7 & {
+            left: -14.28571428571429%;
+            transform: translateX(14.28571428571429%);
 
-                &.is-set {
-                    transform: none;
-                    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-                }
+            &.is-reversing {
+                transform: translateX(-14.28571428571429%);
+            }
+
+            &.is-set {
+                transform: none;
+                transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
             }
         }
     }
@@ -368,49 +330,29 @@ export default {
             }
         }
 
+        .carousel--2 & {
+            flex-basis: 50%;
+        }
+
         // default
         .carousel--3 & {
             flex-basis: 33.33333333333333%;
         }
 
-        .carousel--2 & {
-            flex-basis: 50%;
+        .carousel--4 & {
+            flex-basis: 25%;
         }
 
-        // 600+
-        @include breakpoint( $bp-xs-up ) {
-            .carousel--xs-3 & { 
-                flex-basis: 33.33333333333333%;
-            }
+        .carousel--5 & {
+            flex-basis: 20%;
         }
 
-        // 600+
-        @include breakpoint( $bp-sm-up ) {
-            .carousel--sm-4 & {
-                flex-basis: 25%;
-            }
-
-            .carousel--sm-5 & {
-                flex-basis: 20%;
-            }
+        .carousel--6 & {
+            flex-basis: 16.6666666667%;
         }
 
-        // 768+
-        @include breakpoint( $bp-md-up ) {
-            .carousel--md-5 & {
-                flex-basis: 20%;
-            }
-        }
-
-        // 992+
-        @include breakpoint( $bp-lg-up ) {
-            .carousel--lg-6 & {
-                flex-basis: 16.6666666667%;
-            }
-
-            .carousel--lg-7 & {
-                flex-basis: 14.28571428571429%;
-            }
+        .carousel--7 & {
+            flex-basis: 14.28571428571429%;
         }
     }
 }

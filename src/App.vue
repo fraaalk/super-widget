@@ -8,11 +8,15 @@
 <script>
 import WidgetHeader from './components/WidgetHeader';
 import Shows from './components/Shows';
+import Viewport from './services/viewport';
 
 export default {
   components: {
     'kh-widget-header': WidgetHeader,
     'kh-shows-list': Shows,
+  },
+  created() {
+    this.$store.commit('UPDATE_VIEWPORT', Viewport.get());
   },
 };
 </script>

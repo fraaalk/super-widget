@@ -29,8 +29,7 @@
 
     <div class="grid__col-12 grid__col-sm-9 grid__col-md-10 grid--order-4 grid--order-sm-3">
       <kh-carousel 
-        :slidesDefault="slidesDefault"
-        :slidesResponsive="slidesResponsive"
+        :slidesPerPage="slidesPerPage"
         :totalSlides="schedule.length"
         :componentId="carouselId">
 
@@ -110,11 +109,13 @@ export default {
   props: ['movie'],
   data() {
     return {
-      slidesDefault: 3,
-      slidesResponsive: {
+      slidesPerPage: {
+        none: 3,
+        xs: 3,
         sm: 4,
         md: 5,
         lg: 7,
+        xlg: 7,
       },
     };
   },
