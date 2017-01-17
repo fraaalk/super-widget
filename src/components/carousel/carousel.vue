@@ -46,6 +46,7 @@ export default {
   data() {
     return {
       isAnimating: false,
+      isReversing: false,
       visibleSlides: 5,
     };
   },
@@ -86,7 +87,10 @@ export default {
     },
 
     stageClasses() {
-      return !this.isAnimating ? 'is-set' : '';
+      return {
+        'is-set': !this.isAnimating,
+        'is-reversing': this.isReversing,
+      };
     },
   },
   methods: {
@@ -148,11 +152,13 @@ export default {
     },
     slidePrev() {
       if (this.slidePrevEnabled) {
+        this.isReversing = true;
         this.slide(true);
       }
     },
     slideNext() {
       if (this.slideNextEnabled) {
+        this.isReversing = false;
         this.slide(false);
       }
     },
