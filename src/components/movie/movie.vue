@@ -1,5 +1,7 @@
 <template>
-  <article :id="movie.movieId">
+  <article 
+    :id="movie.movieId" 
+    class="grid">
     <header class="ui-header grid__col-12 grid__cell">
       <span class="ui-title">
         {{ movie.name }}
@@ -7,27 +9,31 @@
       <span v-for="flag in movie.flags" class="ui-flag">
         {{ flag }}
       </span>
-      <div class="grid__col-5 grid__col-xs-3 grid__col-md-2 grid__col--bleed">
-        <div class="grid">
-          <div class="grid__col-12">
-            <div class="ui-aspect ui-aspect-7-10">
-              <div class="ui-aspect__inner">
-                <template v-if="movie.lazyImage">
-                  <img class="ui-image ui-image--responsive ui-image--lazyload" :src="'https://www.kinoheld.de' + movie.lazyImage" :alt="movie.name">
-                </template>
-                <template v-else>
-                  <svg class="ui-image ui-image--responsive ui-image--placeholder">
-                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-movieroll"></use>
-                  </svg>
-                </template>
-              </div>
+    </header>
+
+    <div class="grid__col-5 grid__col-xs-3 grid__col-md-2 grid__col--bleed">
+      <div class="grid">
+        <div class="grid__col-12">
+          <div class="ui-aspect ui-aspect-7-10">
+            <div class="ui-aspect__inner">
+              <template v-if="movie.lazyImage">
+                <img 
+                  class="ui-image ui-image--responsive ui-image--lazyload" 
+                  :src="'https://www.kinoheld.de' + movie.lazyImage" 
+                  :alt="movie.name">
+              </template>
+              <template v-else>
+                <svg class="ui-image ui-image--responsive ui-image--placeholder">
+                  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-movieroll"></use>
+                </svg>
+              </template>
             </div>
           </div>
         </div>
       </div>
-    </header>
+    </div>
 
-    <div class="grid__col-12 grid__col-sm-9 grid__col-md-10 grid--order-4 grid--order-sm-3">
+    <div class="grid__col-12 grid__col-sm-9 grid__col-md-10">
       <kh-carousel 
         :slidesPerPage="slidesPerPage"
         :totalSlides="schedule.length"
@@ -67,32 +73,33 @@
     </div>
 
 
-    <div class="grid__col-7 grid__col-sm-9 grid__col-md-10 grid--order-2 grid--order-sm-5">
+    <div class="grid__col-7 grid__col-sm-9 grid__col-md-10">
       <div class="movie-info movie-info--short">
         <dl class="ui-defintion-list ui-definition-list--inline">
-          <template v-if="movie.duration">
-            <dt>Duration<!-- <?php echo t('labels|Duration'); ?> --></dt>
-            <dd> {{ movie.duration }} <!-- <?php echo t('bookings|minutes'); ?> --></dd>
-          </template>
-          <template v-if="movie.ageRating">
-            <dt>AgeRating<!-- <?php echo t('MPAA'); ?> --></dt>
-            <dd>{{ movie.ageRating }}</dd>
-          </template>
-          <template v-if="movie.language">
-            <dt>
-              Language <template v-if="movie.subtitle">/ Subtitle </template>
-              <!-- <?php echo t('Language'); ?><% if (show.subtitle) { %> / <?php echo t('Subtitle'); ?><% } %> -->
+            <dt v-if="movie.duration">
+              Duration
             </dt>
-            <dd>
+            <dd v-if="movie.duration">
+              {{ movie.duration }}
+            </dd>
+            <dt v-if="movie.ageRating">
+              AgeRating
+            </dt>
+            <dd v-if="movie.ageRating">
+              {{ movie.ageRating }}
+            </dd>
+            <dt v-if="movie.language">
+              Language <template v-if="movie.subtitle">/ Subtitle </template>
+            </dt>
+            <dd v-if="movie.language">
               {{ movie.language }} <template v-if="movie.subtitle"> / {{ movie.subtitle }}</template>
             </dd>
-          </template>
-          <template v-if="movie.genre">
-            <dt>
-              Genre <!--<?php echo t('Genre'); ?>-->
+            <dt v-if="movie.genre">
+              Genre
             </dt>
-            <dd>{{ movie.genre }}</dd>
-          </template>
+            <dd>
+              {{ movie.genre }}
+            </dd>
         </dl>
       </div>
     </div>
@@ -102,8 +109,8 @@
 <script>
 import { mapGetters } from 'vuex';
 import formatDate from 'date-format';
-import Carousel from './carousel/carousel';
-import CarouselSlide from './carousel/carousel-slide';
+import Carousel from './../carousel/carousel';
+import CarouselSlide from './../carousel/carousel-slide';
 
 export default {
   props: ['movie'],
@@ -171,7 +178,7 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../../node_modules/family.scss/source/src/family";
+@import "../../../node_modules/family.scss/source/src/family";
 // .schedule
 // element class containing .schedule-day and .schedule-times styling
 .schedule {

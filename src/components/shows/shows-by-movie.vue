@@ -17,7 +17,7 @@ import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
 import DataLayer from './../../services/data-layer';
 
-import Movie from './../Movie';
+import Movie from './../movie/movie';
 
 const _ = {
   groupBy,
@@ -42,7 +42,7 @@ export default {
 
         return computedMovie;
       });
-      return [computedMovies[0]];
+      return computedMovies;
     },
   },
   components: {

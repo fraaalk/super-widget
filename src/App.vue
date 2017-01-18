@@ -9,6 +9,7 @@
 import WidgetHeader from './components/WidgetHeader';
 import Shows from './components/Shows';
 import Viewport from './services/viewport';
+import EventBus from './services/event-bus';
 
 export default {
   components: {
@@ -17,6 +18,10 @@ export default {
   },
   created() {
     this.$store.commit('UPDATE_VIEWPORT', Viewport.get());
+
+    EventBus.$on('viewport.breakpoint', (data) => {
+      this.$store.commit('UPDATE_VIEWPORT', data);
+    });
   },
 };
 </script>
@@ -26,6 +31,7 @@ export default {
 // base
 @import "vars";
 @import "base";
+@import "helpers";
 
 // node
 @import "../node_modules/normalize-scss/sass/normalize";

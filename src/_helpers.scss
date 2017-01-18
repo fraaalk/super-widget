@@ -1,0 +1,79 @@
+.grid,
+.grid__cell,
+.grid__col {
+
+    // extending grid__col--bleed with special cases
+    &--bleed {
+        &-right {
+            padding-right: 0;
+        }
+
+        &-left {
+            padding-left: 0;
+        }
+
+        &-top {
+            padding-top: 0;
+        }
+
+        &-bottom {
+            padding-bottom: 0;
+        }
+    }
+}
+
+
+// util classes
+.u {
+    &-no-wrap {
+        white-space: nowrap;
+    }
+
+    &-text {
+        &-center {
+            text-align: center;
+        }
+
+        &-right {
+            text-align: right;
+        }
+
+        &-upper {
+            text-transform: uppercase;
+        }
+    }
+
+    // flex alignment helper
+    &-align {
+        &-self {
+            &-start {
+                align-self: flex-start;
+            }
+
+            &-end {
+                align-self: flex-end;
+            }
+        }
+    }
+
+    // creates a linebreak
+    &-linebreak {
+        &-before:before,
+        &-after:after {
+            content: '';
+            display: block;
+        }
+    }
+
+    // creates a new line
+    &-newline {
+        &-before:before,
+        &-after:after {
+            content: '';
+            display: block;
+            height: 1em;
+        }
+    }
+}
+
+

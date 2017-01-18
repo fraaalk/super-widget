@@ -1,4 +1,6 @@
 import _throttle from 'lodash/throttle';
+// import Vuex from 'vuex';
+
 import DataLayer from './../services/data-layer';
 import EventBus from './../services/event-bus';
 
