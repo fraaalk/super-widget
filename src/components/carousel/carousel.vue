@@ -40,6 +40,7 @@
 
 <script>
 import SVGIcon from './../SVGIcon';
+import EventBus from './../../services/event-bus';
 
 export default {
   data() {
@@ -72,10 +73,14 @@ export default {
     },
 
     carouselClasses() {
-      let carouselClasses = `carousel--${this.slidesPerPage[this.breakpoint]}`;
-      carouselClasses += ` ${this.cssClasses.carousel}`;
-
-      return carouselClasses;
+      const carouselClasses = [
+        `carousel--${this.slidesPerPage[this.breakpoint]}`,
+        `${this.cssClasses.carousel}`,
+      ];
+      if (this.totalSlides === this.visibleSlides) {
+        carouselClasses.push('is-inactive');
+      }
+      return carouselClasses.join(' ');
     },
 
     slidePrevEnabled() {
@@ -94,21 +99,22 @@ export default {
     },
   },
   methods: {
-    slide(isReversing) {
+    slide(newSlide = false, isReversing) {
       const slides = this.slides;
       const totalSlides = this.totalSlides;
       let currentSlide = this.currentSlide;
-      let newSlide;
       let refSlide;
 
-      if (isReversing) {
-        newSlide = currentSlide > 0
-          ? currentSlide -= 1
-          : 0;
-      } else {
-        newSlide = currentSlide < totalSlides
-          ? currentSlide += 1
-          : totalSlides;
+      if (!newSlide) {
+        if (isReversing) {
+          newSlide = currentSlide > 0
+            ? currentSlide -= 1
+            : 0;
+        } else {
+          newSlide = currentSlide < totalSlides
+            ? currentSlide += 1
+            : totalSlides;
+        }
       }
 
       if (newSlide === 0) {
@@ -150,6 +156,10 @@ export default {
         },
       });
     },
+    goTo(slideIndex) {
+      const isReversing = this.currentSlide > slideIndex;
+      this.slide(slideIndex, isReversing);
+    },
     slidePrev() {
       if (this.slidePrevEnabled) {
         this.isReversing = true;
@@ -167,7 +177,9 @@ export default {
     'kh-svg-icon': SVGIcon,
   },
   created() {
-    // temporary var move to viewport service soon
+    EventBus.$on(`${this.componentId}.goTo`, (slideIndex) => {
+      this.goTo(slideIndex);
+    });
 
     // create a unique id
     this.$store.commit('ADD_COMPONENT', {

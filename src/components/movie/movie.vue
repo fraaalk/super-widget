@@ -69,8 +69,17 @@
             </li>
           </ul>
         </kh-carousel-slide>
-
       </kh-carousel>
+
+        <button 
+          type="button" 
+          class="movie__pre-sale ui-button ui-button--cta ui-corners"
+          :class=""
+          @click="goToFirstShow">
+          <div class="ui-button__inner">
+            <span>{{ movie.firstShow | localizeWeekDay }} {{ movie.firstShow | localizeDate }}</span>
+          </div>
+        </button>
     </div>
 
 
@@ -112,6 +121,7 @@ import { mapGetters } from 'vuex';
 import formatDate from 'date-format';
 import Carousel from './../carousel/carousel';
 import CarouselSlide from './../carousel/carousel-slide';
+import EventBus from './../../services/event-bus';
 
 export default {
   props: ['movie'],
@@ -156,8 +166,26 @@ export default {
       return [...new Set(playTimes)];
     },
 
+    firstShowDayIndex() {
+      let firstShowDayIndex = 0;
+      const firstShow = new Date(this.movie.firstShow);
+      firstShow.setHours(0, 0, 0, 0);
+
+      this.days.forEach((day, index) => {
+        if (firstShow.getTime() === day.timestamp) {
+          firstShowDayIndex = index;
+        }
+      });
+      return firstShowDayIndex;
+    },
+
     schedule() {
-      return this.days.map((day) => {
+      // fetch the relevant days from the days
+      const days = this.days.filter((day, dayIndex) =>
+        this.movie.lastShow > day.timestamp || dayIndex <= 6
+      );
+
+      return days.map((day) => {
         // filter shows for each day
         const showsForCurrentDay = this.movie.shows.filter(
           show => formatDate('dd', new Date(show.start)) === day.day
@@ -178,6 +206,11 @@ export default {
       });
     },
   },
+  methods: {
+    goToFirstShow() {
+      EventBus.$emit(`${this.carouselId}.goTo`, this.firstShowDayIndex);
+    },
+  },
   components: {
     'kh-carousel': Carousel,
     'kh-carousel-slide': CarouselSlide,
@@ -186,69 +219,4 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../../../node_modules/family.scss/source/src/family";
-// .schedule
-// element class containing .schedule-day and .schedule-times styling
-.schedule {
-
-    // .schedule-times
-    // list of showtimes for a movie in a horizontal or vertical view
-    &__times {
-        display: flex;
-        align-items: stretch;
-        margin: 0;
-        list-style-type: none;
-
-        // .shows__view--movies .schedule-times
-        // vertical view
-        .shows__view--movies & {
-            flex-direction: column;
-            padding: 0;
-        }
-
-        // .shows__view--days .schedule-times
-        // horizontal view
-        .shows__view--days & { 
-            flex-direction: row;
-            flex-wrap: wrap;
-        }
-
-        > li {
-            flex-grow: 1;
-            text-align: center;
-            
-        }
-
-        > li {
-            .shows__view--days & {
-                width: 16.666667%;
-            }
-
-            @include at-least(5) {
-                .shows__view--days & {
-                    margin-top: 1px;
-                }
-            }
-
-            @include every(6) { 
-                .shows__view--days & {
-                    margin-left: 0;
-                }
-            }
-
-            .shows__view--movies & { 
-                margin-top: 1px;
-                width: 100%;
-            }
-        }
-
-        > li + li {
-
-            
-            .shows__view--days & {
-                margin-left: 1px;
-            }
-        }
-    }
-}
 </style>

@@ -76,4 +76,69 @@ export default {
 </script>
 
 <style lang="scss">
+@import "../../../node_modules/family.scss/source/src/family";
+// .schedule
+// element class containing .schedule-day and .schedule-times styling
+.schedule {
+
+    // .schedule-times
+    // list of showtimes for a movie in a horizontal or vertical view
+    &__times {
+        display: flex;
+        align-items: stretch;
+        margin: 0;
+        list-style-type: none;
+
+        // .shows__view--movies .schedule-times
+        // vertical view
+        .shows__view--movies & {
+            flex-direction: column;
+            padding: 0;
+        }
+
+        // .shows__view--days .schedule-times
+        // horizontal view
+        .shows__view--days & { 
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+
+        > li {
+            flex-grow: 1;
+            text-align: center;
+            
+        }
+
+        > li {
+            .shows__view--days & {
+                width: 16.666667%;
+            }
+
+            @include at-least(5) {
+                .shows__view--days & {
+                    margin-top: 1px;
+                }
+            }
+
+            @include every(6) { 
+                .shows__view--days & {
+                    margin-left: 0;
+                }
+            }
+
+            .shows__view--movies & { 
+                margin-top: 1px;
+                width: 100%;
+            }
+        }
+
+        > li + li {
+
+            
+            .shows__view--days & {
+                margin-left: 1px;
+            }
+        }
+    }
+}
 </style>

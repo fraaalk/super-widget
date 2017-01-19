@@ -79,7 +79,14 @@ export default {
     },
   },
   created() {
-    this.generateDays(Date.now(), DataLayer.get('shows.47544.start'));
+    const showDates = Object.keys(DataLayer.get('shows')).map(show =>
+      DataLayer.get(`shows.${show}.start`)
+    );
+
+    const endDate = Math.max(...showDates);
+    const startDate = Date.now();
+
+    this.generateDays(startDate, endDate);
     // this.tickNow();
   },
   methods: {
