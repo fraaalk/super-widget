@@ -1,7 +1,7 @@
 <template>
   <div class="shows__view shows__view--movies">
     <ul class="ui-list ui-list--movies">
-      <li v-for="movie in movies">
+      <li v-for="movie in filteredMovies">
         <kh-movie 
           :movie="movie">
         </kh-movie>
@@ -43,6 +43,13 @@ export default {
         return computedMovie;
       });
       return computedMovies;
+    },
+    filteredMovies() {
+      const filteredMovies = this.movies.filter(movie =>
+        movie.shows.length
+      );
+
+      return [filteredMovies[26]];
     },
   },
   components: {

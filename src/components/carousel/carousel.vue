@@ -4,7 +4,7 @@
     :class="carouselClasses">
     <button 
       type="button" 
-      class="ui-button ui-button--secondary ui-corners-left align-self-start"
+      class="ui-button ui-button--secondary ui-corners-left u-align-self-start"
       :class="{'is-disabled': !slidePrevEnabled}"
       @click='slidePrev'>
       <div class="ui-button__inner">
@@ -25,7 +25,7 @@
 
     <button 
       type="button" 
-      class="ui-button ui-button--secondary ui-corners-right align-self-start"
+      class="ui-button ui-button--secondary ui-corners-right u-align-self-start"
       :class="{'is-disabled': !slideNextEnabled}"
       @click="slideNext">
       <div class="ui-button__inner">
@@ -49,10 +49,10 @@ export default {
     };
   },
   props: [
-    'initialClasses',
     'slidesPerPage',
     'componentId',
     'totalSlides',
+    'cssClasses',
   ],
   computed: {
     breakpoint() {
@@ -72,7 +72,10 @@ export default {
     },
 
     carouselClasses() {
-      return `carousel--${this.slidesPerPage[this.breakpoint]}`;
+      let carouselClasses = `carousel--${this.slidesPerPage[this.breakpoint]}`;
+      carouselClasses += ` ${this.cssClasses.carousel}`;
+
+      return carouselClasses;
     },
 
     slidePrevEnabled() {

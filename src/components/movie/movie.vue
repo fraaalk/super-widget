@@ -34,8 +34,9 @@
     </div>
 
     <div class="grid__col-12 grid__col-sm-9 grid__col-md-10">
-      <kh-carousel 
-        :slidesPerPage="slidesPerPage"
+      <kh-carousel
+        :slidesPerPage="carouselConfig.slidesPerPage"
+        :cssClasses="carouselConfig.cssClasses"
         :totalSlides="schedule.length"
         :componentId="carouselId">
 
@@ -43,7 +44,7 @@
           v-for="(day, index) in schedule"
           :slideIndex="index"
           :componentId="carouselId">
-          <div class="ui-button ui-button--secondary is-inactive">
+          <div class="ui-button ui-button--secondary u-no-wrap is-inactive">
             <template v-if="today == day.timestamp">
               <strong>Heute</strong>
             </template>
@@ -116,13 +117,20 @@ export default {
   props: ['movie'],
   data() {
     return {
-      slidesPerPage: {
-        none: 3,
-        xs: 3,
-        sm: 4,
-        md: 5,
-        lg: 7,
-        xlg: 7,
+      carouselConfig: {
+        cssClasses: {
+          carousel: [
+            'carousel--movie',
+          ],
+        },
+        slidesPerPage: {
+          none: 3,
+          xs: 3,
+          sm: 4,
+          md: 5,
+          lg: 7,
+          xlg: 7,
+        },
       },
     };
   },
