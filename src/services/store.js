@@ -32,5 +32,6 @@ export default new Vuex.Store({
       const dateNow = new Date(state.now);
       return dateNow.setHours(0, 0, 0, 0);
     },
+    currentBreakpoint: state => state.viewport.breakpoint,
   },
 });

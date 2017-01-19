@@ -44,7 +44,7 @@ export default {
 
         return computedMovie;
       });
-      return [computedMovies[0]];
+      return computedMovies;
     },
     filteredMovies() {
       const filteredMovies = this.movies.filter(movie =>

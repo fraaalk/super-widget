@@ -78,6 +78,10 @@
           @click="goToFirstShow">
           <div class="ui-button__inner">
             <span>{{ movie.firstShow | localizeWeekDay }} {{ movie.firstShow | localizeDate }}</span>
+            <kh-svg-icon
+              icon-class="ui-button__icon"
+              icon-xlink="#svg-keyboard_arrow_right">
+            </kh-svg-icon>
           </div>
         </button>
     </div>
@@ -119,6 +123,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import formatDate from 'date-format';
+import SVGIcon from './../SVGIcon';
 import Carousel from './../carousel/carousel';
 import CarouselSlide from './../carousel/carousel-slide';
 import EventBus from './../../services/event-bus';
@@ -214,6 +219,7 @@ export default {
   components: {
     'kh-carousel': Carousel,
     'kh-carousel-slide': CarouselSlide,
+    'kh-svg-icon': SVGIcon,
   },
 };
 </script>

@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import SVGIcon from './../SVGIcon';
 import EventBus from './../../services/event-bus';
 
@@ -56,11 +57,13 @@ export default {
     'cssClasses',
   ],
   computed: {
-    breakpoint() {
-      return this.$store.state.viewport.breakpoint;
-    },
+    // get necessary getters from vuex
+    ...mapGetters([
+      'currentBreakpoint',
+    ]),
+
     visibleSlides() {
-      return this.slidesPerPage[this.breakpoint];
+      return this.slidesPerPage[this.currentBreakpoint];
     },
     carousel() {
       return this.$store.state.components[this.componentId];
@@ -71,31 +74,31 @@ export default {
     slides() {
       return this.carousel.slides;
     },
-
     carouselClasses() {
       const carouselClasses = [
-        `carousel--${this.slidesPerPage[this.breakpoint]}`,
+        `carousel--${this.slidesPerPage[this.currentBreakpoint]}`,
         `${this.cssClasses.carousel}`,
       ];
+
+      // if totalSlides matches currently visible slides add the inactive
+      // class to cancel flexbox ordering of carousel slides
       if (this.totalSlides === this.visibleSlides) {
         carouselClasses.push('is-inactive');
       }
+
       return carouselClasses.join(' ');
     },
-
-    slidePrevEnabled() {
-      return this.currentSlide > 0;
-    },
-
-    slideNextEnabled() {
-      return this.totalSlides - (this.visibleSlides + this.currentSlide) > 0;
-    },
-
     stageClasses() {
       return {
         'is-set': !this.isAnimating,
         'is-reversing': this.isReversing,
       };
+    },
+    slidePrevEnabled() {
+      return this.currentSlide > 0;
+    },
+    slideNextEnabled() {
+      return this.totalSlides - (this.visibleSlides + this.currentSlide) > 0;
     },
   },
   methods: {
@@ -163,13 +166,13 @@ export default {
     slidePrev() {
       if (this.slidePrevEnabled) {
         this.isReversing = true;
-        this.slide(true);
+        this.slide(false, true);
       }
     },
     slideNext() {
       if (this.slideNextEnabled) {
         this.isReversing = false;
-        this.slide(false);
+        this.slide(false, false);
       }
     },
   },
