@@ -91,6 +91,15 @@ export default {
     },
 
     /**
+     * Returns the last slide which is slidable
+     * if more than one slide is displayed
+     * @returns {Number} - Last slidable slide
+     */
+    lastSlide() {
+      return this.totalSlides - this.visibleSlides;
+    },
+
+    /**
      * Returns the slides of the carousel
      * @returns {Array} - Array of slides
      */
@@ -125,6 +134,11 @@ export default {
     },
   },
   methods: {
+    /**
+     * Slides the carousel
+     * @param {Boolean} isReversing - Reverse the animation
+     * @param {Number} slideIndex - Jump to a specific slideIndex
+     */
     slide(isReversing, slideIndex = null) {
       const slides = this.slides;
       const totalSlides = this.totalSlides;
@@ -134,18 +148,22 @@ export default {
 
       // todo: substract the given slideIndex from the total slides
       // minus visible slides to not scroll over total index
-      if (slideIndex) {
-        console.log(slideIndex);
-      }
-
-      if (isReversing) {
-        newSlide = currentSlide > 0
-          ? currentSlide -= 1
-          : 0;
-      } else {
+      if (slideIndex && !isReversing) {
+        newSlide = slideIndex > this.lastSlide
+          ? this.lastSlide
+          : slideIndex;
+      } else if (slideIndex && isReversing) {
+        newSlide = slideIndex < this.lastSlide
+          ? this.lastSlide
+          : slideIndex;
+      } else if (!slideIndex && !isReversing) {
         newSlide = currentSlide < totalSlides
           ? currentSlide += 1
           : totalSlides;
+      } else {
+        newSlide = currentSlide > 0
+          ? currentSlide -= 1
+          : 0;
       }
 
       if (newSlide === 0) {

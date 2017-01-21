@@ -204,7 +204,7 @@ export default {
       return days.map((day) => {
         // filter shows for each day
         const showsForCurrentDay = this.movie.shows.filter(
-          show => formatDate('dd', new Date(show.start)) === day.day
+          show => formatDate('dd', new Date(show.start)) === formatDate('dd', new Date(day.timestamp))
         );
         const dailySchedule = {};
 
