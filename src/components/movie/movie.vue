@@ -74,7 +74,7 @@
         <button 
           type="button" 
           class="movie__pre-sale ui-button ui-button--cta ui-corners"
-          :class=""
+          :class="{'is-hidden': hidePreSaleButton }"
           @click="goToFirstShow">
           <div class="ui-button__inner">
             <span>{{ movie.firstShow | localizeWeekDay }} {{ movie.firstShow | localizeDate }}</span>
@@ -195,6 +195,23 @@ export default {
       );
     },
 
+    scheduleCarousel() {
+      return this.$store.state.components[this.carouselId];
+    },
+
+    hidePreSaleButton() {
+      const carousel = this.scheduleCarousel;
+      let hideButton = false;
+
+      if (!carousel) {
+        hideButton = true;
+      } else if (carousel.currentSlide > this.firstShowDayIndex - carousel.visibleSlides) {
+        hideButton = true;
+      }
+
+      return hideButton;
+    },
+
     schedule() {
       // fetch the relevant days from the days
       const days = this.days.filter((day, dayIndex) =>
@@ -236,4 +253,9 @@ export default {
 </script>
 
 <style lang="scss">
+.movie {
+  &__pre-sale {
+    margin: 1em;
+  }
+}
 </style>

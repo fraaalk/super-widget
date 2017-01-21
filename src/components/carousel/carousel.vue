@@ -106,13 +106,18 @@ export default {
     slides() {
       return this.carousel.slides;
     },
+
+    /**
+     * Returns computed css classes for the carousel
+     * @returns {String} - Css classes
+     */
     carouselClasses() {
       const carouselClasses = [
         `carousel--${this.slidesPerPage[this.currentBreakpoint]}`,
         `${this.cssClasses.carousel}`,
       ];
 
-      // if totalSlides matches currently visible slides add the inactive
+      // If totalSlides matches currently visible slides add the inactive
       // class to cancel flexbox ordering of carousel slides
       if (this.totalSlides === this.visibleSlides) {
         carouselClasses.push('is-inactive');
@@ -120,15 +125,30 @@ export default {
 
       return carouselClasses.join(' ');
     },
+
+    /**
+     * Returns computed css classes for the carousel stage
+     * @returns {Object} - Css classes
+     */
     stageClasses() {
       return {
         'is-set': !this.isAnimating,
         'is-reversing': this.isReversing,
       };
     },
+
+    /**
+     * Returns indicator wether sliding backwards is allowed or not
+     * @returns {Boolean}
+     */
     slidePrevEnabled() {
       return this.currentSlide > 0;
     },
+
+    /**
+     * Returns indicator wether sliding forward is allowed or not
+     * @returns {Boolean}
+     */
     slideNextEnabled() {
       return this.totalSlides - (this.visibleSlides + this.currentSlide) > 0;
     },
@@ -146,8 +166,6 @@ export default {
       let refSlide;
       let newSlide;
 
-      // todo: substract the given slideIndex from the total slides
-      // minus visible slides to not scroll over total index
       if (slideIndex && !isReversing) {
         newSlide = slideIndex > this.lastSlide
           ? this.lastSlide
@@ -195,9 +213,11 @@ export default {
         this.isAnimating = false;
       }, 50);
 
+      // Store component mutation in vuex
       this.$store.commit('UPDATE_COMPONENT', {
         componentId: this.componentId,
         data: {
+          visibleSlides: this.visibleSlides,
           currentSlide: newSlide,
           refSlide,
           slides,
@@ -205,16 +225,29 @@ export default {
         },
       });
     },
+
+    /**
+     * Determines animation direction and then jumps to given slideIndex
+     * @param {Number} slideIndex
+     */
     goTo(slideIndex) {
-      const isReversing = this.currentSlide > slideIndex;
-      this.slide(isReversing, slideIndex);
+      this.isReversing = this.currentSlide > slideIndex;
+      this.slide(this.isReversing, slideIndex);
     },
+
+    /**
+     * Slides 1 slide to the left
+     */
     slidePrev() {
       if (this.slidePrevEnabled) {
         this.isReversing = true;
         this.slide(true, null);
       }
     },
+
+    /**
+     * Slides 1 slide to the right
+     */
     slideNext() {
       if (this.slideNextEnabled) {
         this.isReversing = false;
@@ -226,16 +259,19 @@ export default {
     'kh-svg-icon': SVGIcon,
   },
   created() {
+    // Register go to slide event listener and make it
+    // accessible for other components
     EventBus.$on(`${this.componentId}.goTo`, (slideIndex) => {
       this.goTo(slideIndex);
     });
 
-    // create a unique id
+    // Add the component in its current state to vuex
     this.$store.commit('ADD_COMPONENT', {
       componentId: this.componentId,
       data: {
         currentSlide: 0,
         totalSlides: this.totalSlides,
+        visibleSlides: this.visibleSlides,
         refSlide: this.totalSlides - 1,
         slides: [],
       },
