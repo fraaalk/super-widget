@@ -150,38 +150,49 @@ export default {
     };
   },
   computed: {
-    // creates a unique identifier to store the carousek state in vuex
-    carouselId() {
-      return `movie-${this._uid}-carousel`;
-    },
-
-    // get today and days array from vuex store
+    /**
+     * Fetches common getters from vuex for the component
+     */
     ...mapGetters([
       'now',
       'today',
       'days',
     ]),
 
-    // returns the unique timetable with all different play times for this movie
+    /**
+     * Returns a unique identifier as carouselId to store the
+     * current state of carousel in vuex
+     */
+    carouselId() {
+      return `carousel-m-${this._uid}`;
+    },
+
+    /**
+     * Returns the unique playtimes in a timetable for the given movie
+     */
     timeTable() {
       const playTimes = this.movie.shows.map(
         show => `${formatDate('hh', new Date(show.start))}:${formatDate('mm', new Date(show.start))}`
       );
 
+      // Return a unique array of the playtimes
+      // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set
       return [...new Set(playTimes)];
     },
 
+    /**
+     * Returns the first carousel slide index for the movie.
+     */
     firstShowDayIndex() {
-      let firstShowDayIndex = 0;
       const firstShow = new Date(this.movie.firstShow);
+
       firstShow.setHours(0, 0, 0, 0);
 
-      this.days.forEach((day, index) => {
-        if (firstShow.getTime() === day.timestamp) {
-          firstShowDayIndex = index;
-        }
-      });
-      return firstShowDayIndex;
+      // @TODO check for polyfill (babel)
+      // https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+      return this.days.findIndex(day =>
+        day.timestamp === firstShow.getTime()
+      );
     },
 
     schedule() {

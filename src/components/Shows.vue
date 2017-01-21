@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import formatDate from 'date-format';
+// import formatDate from 'date-format';
 
 import SVGIcon from './SVGIcon';
 import Movies from './../components/shows/shows-by-movie';
@@ -122,10 +122,6 @@ export default {
       for (let i = 0; i <= displayDays; i += 1) {
         this.$store.state.days.push({
           timestamp: new Date(date).getTime(),
-          day: formatDate('dd', date),
-          month: formatDate('MM', date),
-          weekDay: DataLayer.get('config.weekDays')[date.getDay()],
-          short: formatDate(DataLayer.get('config.dateFormats.short'), date),
         });
         date.setDate(date.getDate() + 1);
       }

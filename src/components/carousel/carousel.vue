@@ -57,20 +57,43 @@ export default {
     'cssClasses',
   ],
   computed: {
-    // get necessary getters from vuex
+    /**
+     * Fetches common getters from vuex for the component
+     */
     ...mapGetters([
       'currentBreakpoint',
     ]),
 
+    /**
+     * Returns the currently visible slides for the current
+     * breakpoint
+     * @returns {Number} - The number of visible slides
+     */
     visibleSlides() {
       return this.slidesPerPage[this.currentBreakpoint];
     },
+
+    /**
+     * Returns the component reference from vuex for
+     * the current state of the carousel
+     * @returns {Object} - Reference to component state
+     */
     carousel() {
       return this.$store.state.components[this.componentId];
     },
+
+    /**
+     * Returns the current slide
+     * @returns {Number} - Current slide number
+     */
     currentSlide() {
       return this.carousel.currentSlide;
     },
+
+    /**
+     * Returns the slides of the carousel
+     * @returns {Array} - Array of slides
+     */
     slides() {
       return this.carousel.slides;
     },
@@ -102,22 +125,27 @@ export default {
     },
   },
   methods: {
-    slide(newSlide = false, isReversing) {
+    slide(isReversing, slideIndex = null) {
       const slides = this.slides;
       const totalSlides = this.totalSlides;
       let currentSlide = this.currentSlide;
       let refSlide;
+      let newSlide;
 
-      if (!newSlide) {
-        if (isReversing) {
-          newSlide = currentSlide > 0
-            ? currentSlide -= 1
-            : 0;
-        } else {
-          newSlide = currentSlide < totalSlides
-            ? currentSlide += 1
-            : totalSlides;
-        }
+      // todo: substract the given slideIndex from the total slides
+      // minus visible slides to not scroll over total index
+      if (slideIndex) {
+        console.log(slideIndex);
+      }
+
+      if (isReversing) {
+        newSlide = currentSlide > 0
+          ? currentSlide -= 1
+          : 0;
+      } else {
+        newSlide = currentSlide < totalSlides
+          ? currentSlide += 1
+          : totalSlides;
       }
 
       if (newSlide === 0) {
@@ -161,18 +189,18 @@ export default {
     },
     goTo(slideIndex) {
       const isReversing = this.currentSlide > slideIndex;
-      this.slide(slideIndex, isReversing);
+      this.slide(isReversing, slideIndex);
     },
     slidePrev() {
       if (this.slidePrevEnabled) {
         this.isReversing = true;
-        this.slide(false, true);
+        this.slide(true, null);
       }
     },
     slideNext() {
       if (this.slideNextEnabled) {
         this.isReversing = false;
-        this.slide(false, false);
+        this.slide(false, null);
       }
     },
   },
