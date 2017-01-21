@@ -297,79 +297,79 @@ $carouselVariations: (
 .carousel {
   display: flex;
 
-    &__wrapper {
-      width: 100%;
-      overflow: hidden;
-      margin: 0 1px;
+  &__wrapper {
+    width: 100%;
+    overflow: hidden;
+    margin: 0 1px;
+  }
+
+  &__stage {
+    display: flex;
+    flex-grow: 1;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    left: -100%;
+    transform: translateX(100%);
+
+    .is-inactive & {
+      transform: 0 !important;
+      left: 0 !important;
     }
 
-    &__stage {
-      display: flex;
-      flex-grow: 1;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      position: relative;
-      left: -100%;
-      transform: translateX(100%);
+    &.is-reversing {
+      transform: translateX(-100%);
+    }
 
-      .is-inactive & {
-        transform: 0 !important;
-        left: 0 !important;
-      }
+    &.is-set {
+      transform: none;
+      transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
 
-      &.is-reversing {
-        transform: translateX(-100%);
-      }
+    @each $variationName, $value in $carouselVariations {
+      .carousel--#{$variationName} & {
+        left: -$value;
+        transform: translateX($value);
 
-      &.is-set {
-        transform: none;
-        transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-      }
+        &.is-reversing {
+          transform: translateX(-$value);
+        }
 
-      @each $variationName, $value in $carouselVariations {
-        .carousel--#{$variationName} & {
-          left: -$value;
-          transform: translateX($value);
-
-          &.is-reversing {
-            transform: translateX(-$value);
-          }
-
-          &.is-set {
-            transform: none;
-            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
-          }
+        &.is-set {
+          transform: none;
+          transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
         }
       }
     }
+  }
 
-    &__slide {
-      flex: 1 0 100%;
-      order: 2;
-      margin-right: 1px;
-      min-width: 0; // hack to make text ellipsis work inside of flexbox
+  &__slide {
+    flex: 1 0 100%;
+    order: 2;
+    margin-right: 1px;
+    min-width: 0; // hack to make text ellipsis work inside of flexbox
 
-      &.is-ref {
-        order: 1;
+    &.is-ref {
+      order: 1;
+      margin-right: 0;
+    }
+
+    // If the carousel is inactive equal all slides
+    // and remove the ordering for the referenced one
+    .is-inactive & {
+      order: 0 !important;
+
+      &:last-child {
         margin-right: 0;
       }
+    }
 
-      // If the carousel is inactive equal all slides
-      // and remove the ordering for the referenced one
-      .is-inactive & {
-        order: 0 !important;
-
-        &:last-child {
-          margin-right: 0;
-        }
-      }
-
-      @each $variationName, $value in $carouselVariations {
-        .carousel--#{$variationName} & {
-          flex-basis: $value;
-        }
+    @each $variationName, $value in $carouselVariations {
+      .carousel--#{$variationName} & {
+        flex-basis: $value;
       }
     }
+  }
 }
 </style>
