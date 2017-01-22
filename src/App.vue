@@ -12,6 +12,7 @@ import Viewport from './services/viewport';
 import EventBus from './services/event-bus';
 
 export default {
+  name: 'kh-widget',
   components: {
     'kh-widget-header': WidgetHeader,
     'kh-shows-list': Shows,

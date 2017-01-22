@@ -6,7 +6,7 @@
       v-model="filter">
     <ul class="ui-list ui-list--movies">
       <li 
-        v-for="movie in filteredMovies"
+        v-for="movie in sortedMovies"
         v-if="matchesFilter(movie)">
         <kh-movie 
           :movie="movie">
@@ -88,16 +88,14 @@ export default {
     },
 
     /**
-     * Returns the filtered list of the movies to be displayed
-     * after applying all selected filters
-     @ returns {Array} - Array of filtered movies
+     * Returns the sorted list of the movies to be displayed
+     * after applying sorting
+     @ returns {Array} - Array of sorted movies
      */
-    filteredMovies() {
-      const filteredMovies = this.movies.filter(movie =>
-        movie.shows.length
-      );
+    sortedMovies() {
+      const sortedMovies = _.sortBy(this.movies, 'name');
 
-      return filteredMovies;
+      return sortedMovies;
     },
   },
   methods: {
