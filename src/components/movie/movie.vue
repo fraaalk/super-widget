@@ -23,9 +23,10 @@
                   :alt="movie.name">
               </template>
               <template v-else>
-                <svg class="ui-image ui-image--responsive ui-image--placeholder">
-                  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#svg-movieroll"></use>
-                </svg>
+                <kh-svg-icon
+                  icon-class="ui-image ui-image--responsive ui-image--placeholder"
+                  icon-xlink="#svg-movieroll">
+                </kh-svg-icon>
               </template>
             </div>
           </div>

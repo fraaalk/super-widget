@@ -1,7 +1,13 @@
 <template>
   <div class="shows__view shows__view--movies">
+    <input 
+      placeholder="... nach einem Film suchen"
+      type="text" 
+      v-model="filter">
     <ul class="ui-list ui-list--movies">
-      <li v-for="movie in filteredMovies">
+      <li 
+        v-for="movie in filteredMovies"
+        v-if="matchesFilter(movie)">
         <kh-movie 
           :movie="movie">
         </kh-movie>
@@ -15,6 +21,7 @@ import groupBy from 'lodash/groupBy';
 import merge from 'lodash/merge';
 import map from 'lodash/map';
 import sortBy from 'lodash/sortBy';
+// import flattenDeep from 'lodash/flattenDeep';
 import DataLayer from './../../services/data-layer';
 
 import Movie from './../movie/movie';
@@ -27,7 +34,16 @@ const _ = {
 };
 
 export default {
+  data() {
+    return {
+      filter: '',
+    };
+  },
   computed: {
+    /**
+     * Returns a computed list of movies, where the shows merged into
+     * @returns {Array} - Array of computed, extended movies
+     */
     movies() {
       const computedMovies = _.map(_.groupBy(DataLayer.get('shows'), 'name'), (show) => {
         // make sure shows per movie are sorted by start date (first show time now sits in the
@@ -46,12 +62,57 @@ export default {
       });
       return computedMovies;
     },
+
+    /**
+     * Returns an array of unique movie/show names
+     * @returns {Array} - Array of movies/show names
+     */
+    movieList() {
+      const movieList = this.movies.map(movie =>
+        movie.name
+      );
+      return [...new Set(movieList)];
+    },
+
+    /**
+     * Returns an array of unique flags
+     * @returns {Array} - Array of flags
+     */
+    flagList() {
+      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce#Flatten_an_array_of_arrays
+      const flagList = this.movies.map(movie =>
+        movie.flags
+      ).reduce((a, b) => a.concat(b));
+
+      return [...new Set(flagList)];
+    },
+
+    /**
+     * Returns the filtered list of the movies to be displayed
+     * after applying all selected filters
+     @ returns {Array} - Array of filtered movies
+     */
     filteredMovies() {
       const filteredMovies = this.movies.filter(movie =>
         movie.shows.length
       );
 
       return filteredMovies;
+    },
+  },
+  methods: {
+    /**
+     * Returns the movie object if it fullfills the filter criterias
+     * @param {Object} movie - Object of computed movie
+     * @returns {Boolean} - Indicator wether to show or hide current movie
+     */
+    matchesFilter(movie) {
+      let matchesFilter = false;
+
+      if (movie.name.toLowerCase().indexOf(this.filter) > -1) {
+        matchesFilter = true;
+      }
+      return matchesFilter;
     },
   },
   components: {
@@ -118,8 +179,6 @@ export default {
         }
 
         > li + li {
-
-            
             .shows__view--days & {
                 margin-left: 1px;
             }

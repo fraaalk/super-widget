@@ -2,12 +2,12 @@
   <section class="page__wrapper page__wrapper--light">
     <div class="page__content">
       <header class="ui-header ui-header--bordered grid grid--align-center">
-        <div class="grid__col-12 grid__col-xs-8 grid__col-lg-10 grid__col--bleed-left">
+        <div class="grid__col-12 grid__col-xs-8 grid__col-lg-10 u-bleed-left">
             <h2 class="ui-title ui-title--small">
               {{ title }}
             </h2>
         </div>
-        <div class="grid__col-12 grid__col-xs-4 grid__col-lg-2 grid__col--bleed-right">
+        <div class="grid__col-12 grid__col-xs-4 grid__col-lg-2 u-bleed-right">
           <div class="ui-button-group">
             <button type="button" class="ui-button ui-button--secondary"
               v-for="button in layouts"
@@ -24,8 +24,9 @@
       </header>
 
       <transition mode="out-in" name="fade">
-        <component :is="'kh-shows-by-' + activeLayout">
-        </component>
+        <keep-alive>
+          <component :is="'kh-shows-by-' + activeLayout"></component>
+        </keep-alive>
       </transition>
     </div>
   </section>
