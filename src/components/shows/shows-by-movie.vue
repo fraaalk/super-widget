@@ -4,6 +4,11 @@
       placeholder="... nach einem Film suchen"
       type="text" 
       v-model="filter">
+    <label>
+    <input type="checkbox"
+      v-model="reverse">
+      reverse list?
+    </label>
     <ul class="ui-list ui-list--movies">
       <li 
         v-for="movie in sortedMovies"
@@ -37,6 +42,7 @@ export default {
   data() {
     return {
       filter: '',
+      reverse: false,
     };
   },
   computed: {
@@ -95,7 +101,9 @@ export default {
     sortedMovies() {
       const sortedMovies = _.sortBy(this.movies, 'name');
 
-      return sortedMovies;
+      return !this.reverse
+        ? sortedMovies
+        : sortedMovies.reverse();
     },
   },
   methods: {
