@@ -35,10 +35,10 @@ export default {
 @import "helpers";
 
 // node
-@import "../node_modules/normalize-scss/sass/normalize";
-@import "../node_modules/reflex-grid/scss/reflex";
-@import "../node_modules/breakpoint-sass/stylesheets/breakpoint";
-@import "../node_modules/family.scss/source/src/family";
+@import "~normalize-scss/sass/normalize";
+@import "~reflex-grid/scss/reflex";
+@import "~breakpoint-sass/stylesheets/breakpoint";
+@import "~family.scss/source/src/family";
 
 // ui
 @import "ui/ui";

@@ -4,7 +4,7 @@
     :class="carouselClasses">
     <button 
       type="button" 
-      class="ui-button ui-button--secondary ui-corners-left u-align-self-start"
+      class="carousel__button carousel__button--prev ui-button ui-button--secondary ui-corners-left u-align-self-start"
       :class="{'is-disabled': !slidePrevEnabled}"
       @click='slidePrev'>
       <div class="ui-button__inner">
@@ -25,7 +25,7 @@
 
     <button 
       type="button" 
-      class="ui-button ui-button--secondary ui-corners-right u-align-self-start"
+      class="carousel__button carousel__button--next ui-button ui-button--secondary ui-corners-right u-align-self-start"
       :class="{'is-disabled': !slideNextEnabled}"
       @click="slideNext">
       <div class="ui-button__inner">

@@ -2,7 +2,6 @@
   <div class="shows__view shows__view--days">
     <div class="grid grid--justify-end">
       <div class="grid__col-12 grid__col-lg-8">
-        
         <kh-carousel
           :slidesPerPage="carouselConfig.slidesPerPage"
           :cssClasses="carouselConfig.cssClasses"
@@ -14,17 +13,28 @@
             :slideIndex="index"
             :componentId="carouselId">
 
-              <div class="ui-button ui-button--secondary u-no-wrap is-inactive">
-                <template v-if="today == day.timestamp">
-                  <strong>Heute</strong>
-                </template>
-                <template v-else>
-                  {{ day.timestamp | localizeWeekDay }} {{ day.timestamp | localizeDate }}
-                </template>
-              </div>
+            <div 
+              class="ui-button ui-button--secondary u-no-wrap"
+              :class="{ 'is-active': index === selectedDay, 'is-inactive': index != selectedDay }"
+              @click="goToDay(index)">
+              <template v-if="today == day.timestamp">
+                <strong>Heute</strong>
+              </template>
+              <template v-else>
+                {{ day.timestamp | localizeWeekDay }} {{ day.timestamp | localizeDate }}
+              </template>
+            </div>
 
-            </kh-carousel-slide>
-          </kh-carousel>
+          </kh-carousel-slide>
+        </kh-carousel>
+
+        <transition mode="out-in" name="fade">
+          <div 
+            v-for="(day, index) in days"
+            v-if="index === selectedDay">
+            shows for the day {{ day.timestamp | localizeWeekDay }} {{ day.timestamp | localizeDate }}
+          </div>  
+        </transition>
       </div>
     </div>
   </div>
@@ -38,11 +48,11 @@ import CarouselSlide from './../carousel/carousel-slide';
 export default {
   data() {
     return {
-      foo: 'bar',
+      selectedDay: 0,
       carouselConfig: {
         cssClasses: {
           carousel: [
-            'carousel--movie',
+            'carousel--select-day',
           ],
         },
         slidesPerPage: {
@@ -63,9 +73,13 @@ export default {
       'today',
       'days',
     ]),
-
     carouselId() {
       return `${this._uid}-carousel`;
+    },
+  },
+  methods: {
+    goToDay(index) {
+      this.selectedDay = index;
     },
   },
   components: {
@@ -76,7 +90,8 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../../../node_modules/family.scss/source/src/family";
+@import "~family.scss/source/src/family";
+
 // .schedule
 // element class containing .schedule-day and .schedule-times styling
 .schedule {
