@@ -91,7 +91,6 @@ export default {
 
 <style lang="scss">
 $headerHeight: 56px;
-$fadeDuration: 0.2s;
 
 .widget-header {
   background: #ccc;
@@ -178,20 +177,5 @@ $fadeDuration: 0.2s;
   }
 }
 
-.fade {
-  &-enter {
-    opacity: 0;
 
-    &-active {
-      transition: opacity $fadeDuration ease-in-out;
-    }
-  }
-
-  &-leave {
-    &-active {
-      transition: opacity $fadeDuration;
-      opacity: 0;
-    }
-  }
-}
 </style>

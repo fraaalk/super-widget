@@ -23,7 +23,7 @@
         </div>
       </header>
 
-      <transition mode="out-in" name="fade">
+      <transition mode="out-in" name="transition-fade">
         <keep-alive>
           <component :is="'kh-shows-by-' + activeLayout"></component>
         </keep-alive>

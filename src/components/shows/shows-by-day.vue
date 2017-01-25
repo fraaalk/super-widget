@@ -28,12 +28,14 @@
           </kh-carousel-slide>
         </kh-carousel>
 
-        <transition mode="out-in" name="fade">
-          <div 
+        <transition mode="out-in" name="transition-fade">
+          <template 
             v-for="(day, index) in days"
             v-if="index === selectedDay">
+            <div class="foo">
             shows for the day {{ day.timestamp | localizeWeekDay }} {{ day.timestamp | localizeDate }}
-          </div>  
+            </div>
+          </template>  
         </transition>
       </div>
     </div>

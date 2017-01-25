@@ -79,3 +79,24 @@
   }
 }
 
+.transition {
+  $fadeDuration: 0.2s;
+
+  // fade transition
+  &-fade {
+    &-enter {
+      opacity: 0;
+
+      &-active {
+        transition: opacity $fadeDuration ease-in-out;
+      }
+    }
+
+    &-leave {
+      &-active {
+        transition: opacity $fadeDuration;
+        opacity: 0;
+      }
+    }
+  }
+}
