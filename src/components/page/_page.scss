@@ -1,0 +1,83 @@
+$pageVariations: (
+  light: --color-page__wrapper--light,
+  extralight: --color-page__wrapper--extralight,
+  highlight: --color-page__wrapper--highlight,
+  dark: --color-page__wrapper--dark,
+  extradark: --color-page__wrapper--extradark
+);
+
+.page {
+  position: relative;
+  min-height: 100vh;
+
+  // if in widget mode, 
+  // add a little hack for ios to
+  // display the size properly
+  .mode-widget & {
+    width: 10px;
+    min-width: 100%;
+    padding: 0 0 30px 0;
+  }
+
+  .ui-widget-header & {
+    padding-top: 56px; // widget header is 56px
+  }
+
+  // page wrapper
+  &__wrapper {
+    padding: 0 10px;
+    position: relative;
+
+    @include breakpoint($bp-sm-up) {
+      padding: 0 20px;
+    }
+
+    &--ads,
+    .mode-widget & {
+      padding: 0;
+    }
+
+    // if an ad adds styles the body, make sure
+    // there are no backgrounds from the page wrappers
+    body[style] & {
+      background: transparent;
+    }
+
+    @each $variationName, $value in $pageVariations {
+      &--#{$variationName} {
+        body[style=''] &,
+        body:not([style]) & {
+          background: var($value);
+        }
+      }
+    }
+  }
+
+  // page content
+  &__content {
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    padding: 15px 0;
+
+    @include breakpoint($bp-sm-up) {
+      padding: 20px 0;
+    }
+
+    &--bleed {
+      padding: 0;
+    }
+
+    &--ads {
+      font-size: 0;
+      text-align: center;
+      padding: 0;
+    }
+
+    @each $variationName, $value in $pageVariations {
+      .page__wrapper--#{$variationName} & {
+        background: var($value);
+      }
+    }
+  }
+}

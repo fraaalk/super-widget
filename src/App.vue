@@ -1,7 +1,9 @@
 <template>
   <div id="widget">
     <kh-widget-header></kh-widget-header>
-    <kh-shows-list></kh-shows-list>
+    <div class="page">
+      <kh-shows-list></kh-shows-list>
+    </div>
   </div>
 </template>
 
@@ -57,6 +59,8 @@ export default {
 @import "ui/ui-radio";
 @import "ui/ui-select";
 
+// components
+@import "components/page/page";
 
 .page__content {
   padding-top: calc(56px + 16px);

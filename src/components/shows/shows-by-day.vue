@@ -1,6 +1,7 @@
 <template>
   <div class="shows__view shows__view--days">
     <div class="grid grid--justify-end">
+    
       <div class="grid__col-12 grid__col-lg-8">
         <kh-carousel
           :slidesPerPage="carouselConfig.slidesPerPage"
@@ -30,10 +31,32 @@
 
         <transition mode="out-in" name="transition-fade">
           <template 
-            v-for="(day, index) in days"
-            v-if="index === selectedDay">
+            v-for="(day, dayIndex) in days"
+            v-if="dayIndex === selectedDay">
             <div class="foo">
-            shows for the day {{ day.timestamp | localizeWeekDay }} {{ day.timestamp | localizeDate }}
+              <ul class="ui-list ui-list--shows">
+                <li 
+                  class="grid grid--align-center"
+                  v-for="(show, showName) in shows[dayIndex]">
+                  <div class="grid__col-12 grid__col-md-4 grid__cell">
+                    {{ showName }}
+                  </div>
+                  <ul class="schedule__times grid__col-12 grid__col-md-8">
+                    <li v-for="(showTime, showTimeIndex) in show">
+                      <a 
+                        class="ui-button ui-button--cta" 
+                        :href="showTime.url"
+                        v-if="now < showTime.start">
+                        {{ showTime.start | localizeTime }}
+                      </a>
+                      <span 
+                        class="ui-button ui-button--cta is-disabled"
+                        v-if="now > showTime.start">
+                        {{ showTime.start | localizeTime }}
+                      </span>
+                    </li>
+                  </ul>
+                </li>
             </div>
           </template>  
         </transition>
@@ -43,9 +66,21 @@
 </template>
 
 <script>
+import groupBy from 'lodash/groupBy';
+import sortBy from 'lodash/sortBy';
+import filter from 'lodash/filter';
+import formatDate from 'date-format';
+
 import { mapGetters } from 'vuex';
 import Carousel from './../carousel/carousel';
 import CarouselSlide from './../carousel/carousel-slide';
+import DataLayer from './../../services/data-layer';
+
+const _ = {
+  groupBy,
+  sortBy,
+  filter,
+};
 
 export default {
   data() {
@@ -78,8 +113,27 @@ export default {
     carouselId() {
       return `${this._uid}-carousel`;
     },
+
+    shows() {
+      const days = [];
+
+      this.days.forEach((day, dayIndex) => {
+        const showsForDay = this.getShowsForDay(day.timestamp, DataLayer.get('shows'));
+        days[dayIndex] = _.groupBy(showsForDay, 'name');
+      });
+
+      return days;
+    },
   },
   methods: {
+    getShowsForDay(dayTimestamp, shows) {
+      const dateFormat = DataLayer.get('config.dateFormats.short');
+      const currentDay = formatDate(dateFormat, new Date(dayTimestamp));
+
+      return _.filter(shows, show =>
+        currentDay === formatDate(dateFormat, new Date(show.start))
+      );
+    },
     goToDay(index) {
       this.selectedDay = index;
     },
