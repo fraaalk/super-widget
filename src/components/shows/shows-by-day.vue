@@ -48,13 +48,19 @@
                   class="ui-button ui-button--cta" 
                   :href="showTime.url"
                   v-if="now < showTime.start">
-                  {{ showTime.start | localizeTime }}
+                  <span>{{ showTime.start | localizeTime }}</span>
+                  <span class="ui-flag" v-for="flag in showTime.flags">
+                    {{ flag }}
+                  </span>
                 </a>
-                <span 
+                <div 
                   class="ui-button ui-button--cta is-disabled"
                   v-if="now > showTime.start">
-                  {{ showTime.start | localizeTime }}
-                </span>
+                  <span>{{ showTime.start | localizeTime }}</span>
+                  <span class="ui-flag ui-flag--muted" v-for="(flag, flagName) in showTime.flags">
+                    {{ flag }}
+                  </span>
+                </div>
               </li>
             </ul>
           </li>
@@ -71,8 +77,6 @@
 
 <script>
 import groupBy from 'lodash/groupBy';
-import sortBy from 'lodash/sortBy';
-import filter from 'lodash/filter';
 import formatDate from 'date-format';
 
 import { mapGetters } from 'vuex';
@@ -82,8 +86,6 @@ import DataLayer from './../../services/data-layer';
 
 const _ = {
   groupBy,
-  sortBy,
-  filter,
 };
 
 export default {
@@ -91,11 +93,6 @@ export default {
     return {
       selectedDay: 0,
       carouselConfig: {
-        cssClasses: {
-          carousel: [
-            'carousel--select-day',
-          ],
-        },
         slidesPerPage: {
           none: 3,
           xs: 4,
@@ -119,6 +116,9 @@ export default {
       return `${this._uid}-carousel`;
     },
 
+    /**
+     * Returns
+     */
     processedShows() {
       const days = [];
       const shows = this.shows;
@@ -138,17 +138,18 @@ export default {
     /**
      * Returns an object with shows for the given day
      * @param {Number} dayTimestamp - The timestamp of the day to search for
-     * @param {Object} shows - The source object of shows to filter
-     * @returns {Object} - Filtered object of shows matching the given day
+     * @param {Array} shows - The source array of shows to filter
+     * @returns {Array} - Filtered array of shows, sorted ascending by start time
      */
     getShowsForDay(dayTimestamp, shows) {
       const dateFormat = DataLayer.get('config.dateFormats.short');
-      const currentDay = formatDate(dateFormat, new Date(dayTimestamp));
+      const timezoneOffset = DataLayer.get('config.timezoneOffset');
+      const currentDay = formatDate(dateFormat, new Date(dayTimestamp), timezoneOffset);
 
-      return _.sortBy(
-        _.filter(shows, show =>
-          currentDay === formatDate(dateFormat, new Date(show.start))
-        )
+      return shows.filter(show =>
+        currentDay === formatDate(dateFormat, new Date(show.start), timezoneOffset)
+      ).sort((a, b) =>
+        a.start - b.start
       );
     },
 

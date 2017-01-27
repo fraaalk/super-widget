@@ -112,10 +112,12 @@ export default {
      * @returns {String} - Css classes
      */
     carouselClasses() {
-      const carouselClasses = [
-        `carousel--${this.slidesPerPage[this.currentBreakpoint]}`,
-        `${this.cssClasses.carousel}`,
-      ];
+      const carouselClasses = [`carousel--${this.slidesPerPage[this.currentBreakpoint]}`];
+
+      // Add custom classes if provided
+      if (this.cssClasses && this.cssClasses.carousel) {
+        carouselClasses.push(this.cssClasses.carousel);
+      }
 
       // If totalSlides matches currently visible slides add the inactive
       // class to cancel flexbox ordering of carousel slides

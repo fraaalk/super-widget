@@ -1,6 +1,6 @@
 <template>
   <div class="shows__view shows__view--shows">
-    <ul class="ui-list ui-list--movies">
+    <ul class="ui-list ui-list--shows">
       <li 
         v-for="show in processedShows" 
         v-if="now < show.start">
@@ -12,6 +12,9 @@
             </div>
             <div class="grid__col-6 grid__col-sm-7 grid__cell">
               {{ show.name }}
+              <span class="ui-flag" v-for="flag in show.flags">
+                {{ flag }}
+              </span>
             </div>
             <div class="grid__col-3 grid__col-sm-3 grid--align-content-end">
               <div class="ui-button ui-button--cta ui-corners u-text-center">
@@ -28,11 +31,6 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import sortBy from 'lodash/sortBy';
-
-const _ = {
-  sortBy,
-};
 
 export default {
   computed: {
@@ -42,8 +40,15 @@ export default {
       'shows',
     ]),
 
+    /**
+     * Returns all shows sorted ascending by start time
+     */
     processedShows() {
-      return _.sortBy(this.shows, 'start');
+      const shows = this.shows;
+
+      return shows.sort((a, b) =>
+        a.start - b.start
+      );
     },
   },
 };
