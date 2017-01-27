@@ -28,40 +28,44 @@
 
           </kh-carousel-slide>
         </kh-carousel>
-
-        <transition mode="out-in" name="transition-fade">
-          <template 
-            v-for="(day, dayIndex) in days"
-            v-if="dayIndex === selectedDay">
-            <div class="foo">
-              <ul class="ui-list ui-list--shows">
-                <li 
-                  class="grid grid--align-center"
-                  v-for="(show, showName) in shows[dayIndex]">
-                  <div class="grid__col-12 grid__col-md-4 grid__cell">
-                    {{ showName }}
-                  </div>
-                  <ul class="schedule__times grid__col-12 grid__col-md-8">
-                    <li v-for="(showTime, showTimeIndex) in show">
-                      <a 
-                        class="ui-button ui-button--cta" 
-                        :href="showTime.url"
-                        v-if="now < showTime.start">
-                        {{ showTime.start | localizeTime }}
-                      </a>
-                      <span 
-                        class="ui-button ui-button--cta is-disabled"
-                        v-if="now > showTime.start">
-                        {{ showTime.start | localizeTime }}
-                      </span>
-                    </li>
-                  </ul>
-                </li>
-            </div>
-          </template>  
-        </transition>
       </div>
     </div>
+
+    <transition mode="out-in" name="transition-fade">
+      <template 
+        v-for="(day, dayIndex) in days"
+        v-if="dayIndex === selectedDay">
+        <ul class="ui-list ui-list--shows">
+          <li class="grid grid--align-center"
+            v-if="shows[dayIndex].hasShows"
+            v-for="(show, showName) in shows[dayIndex].shows">
+            <div class="grid__col-12 grid__col-md-4 grid__cell">
+              {{ showName }}
+            </div>
+            <ul class="play-times grid__col-12 grid__col-md-8">
+              <li v-for="(showTime, showTimeIndex) in show">
+                <a 
+                  class="ui-button ui-button--cta" 
+                  :href="showTime.url"
+                  v-if="now < showTime.start">
+                  {{ showTime.start | localizeTime }}
+                </a>
+                <span 
+                  class="ui-button ui-button--cta is-disabled"
+                  v-if="now > showTime.start">
+                  {{ showTime.start | localizeTime }}
+                </span>
+              </li>
+            </ul>
+          </li>
+          <li v-if="!shows[dayIndex].hasShows">
+            <p class="u-text-center">
+              No data available for the selected date.
+            </p>
+          </li>
+        </ul>
+      </template>  
+    </transition>
   </div>
 </template>
 
@@ -119,21 +123,37 @@ export default {
 
       this.days.forEach((day, dayIndex) => {
         const showsForDay = this.getShowsForDay(day.timestamp, DataLayer.get('shows'));
-        days[dayIndex] = _.groupBy(showsForDay, 'name');
+        days[dayIndex] = {
+          shows: _.groupBy(showsForDay, 'name'),
+          hasShows: showsForDay.length,
+        };
       });
 
       return days;
     },
   },
   methods: {
+    /**
+     * Returns an object with shows for the given day
+     * @param {Number} dayTimestamp - The timestamp of the day to search for
+     * @param {Object} shows - The source object of shows to filter
+     * @returns {Object} - Filtered object of shows matching the given day
+     */
     getShowsForDay(dayTimestamp, shows) {
       const dateFormat = DataLayer.get('config.dateFormats.short');
       const currentDay = formatDate(dateFormat, new Date(dayTimestamp));
 
-      return _.filter(shows, show =>
-        currentDay === formatDate(dateFormat, new Date(show.start))
+      return _.sortBy(
+        _.filter(shows, show =>
+          currentDay === formatDate(dateFormat, new Date(show.start))
+        )
       );
     },
+
+    /**
+     * Displays the given day with its shows
+     * @param {Number} index - The day index
+     */
     goToDay(index) {
       this.selectedDay = index;
     },
@@ -145,71 +165,33 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "~family.scss/source/src/family";
 
-// .schedule
-// element class containing .schedule-day and .schedule-times styling
-.schedule {
+.play-times {
+  display: flex;
+  align-items: stretch;
+  margin: 0;
+  list-style-type: none;
+  flex-direction: row;
+  flex-wrap: wrap;
 
-    // .schedule-times
-    // list of showtimes for a movie in a horizontal or vertical view
-    &__times {
-        display: flex;
-        align-items: stretch;
-        margin: 0;
-        list-style-type: none;
-
-        // .shows__view--movies .schedule-times
-        // vertical view
-        .shows__view--movies & {
-            flex-direction: column;
-            padding: 0;
-        }
-
-        // .shows__view--days .schedule-times
-        // horizontal view
-        .shows__view--days & { 
-            flex-direction: row;
-            flex-wrap: wrap;
-        }
-
-        > li {
-            flex-grow: 1;
-            text-align: center;
-            
-        }
-
-        > li {
-            .shows__view--days & {
-                width: 16.666667%;
-            }
-
-            @include at-least(5) {
-                .shows__view--days & {
-                    margin-top: 1px;
-                }
-            }
-
-            @include every(6) { 
-                .shows__view--days & {
-                    margin-left: 0;
-                }
-            }
-
-            .shows__view--movies & { 
-                margin-top: 1px;
-                width: 100%;
-            }
-        }
-
-        > li + li {
-
-            
-            .shows__view--days & {
-                margin-left: 1px;
-            }
-        }
+  > li {
+    flex-grow: 1;
+    text-align: center;
+    width: 16.666667%;
+    
+    @include at-least(5) {
+      margin-top: 1px;
     }
+
+    @include every(6) { 
+      margin-left: 0;
+    }
+
+    + li {
+      margin-left: 1px;
+    }
+  }
 }
 </style>
