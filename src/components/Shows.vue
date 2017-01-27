@@ -88,6 +88,7 @@ export default {
     const startDate = Date.now();
 
     this.generateDays(startDate, endDate);
+    this.generateShows(DataLayer.get('shows'));
     // this.tickNow();
   },
   methods: {
@@ -101,6 +102,17 @@ export default {
       setInterval(() => {
         this.$store.state.now = Date.now();
       }, 1000);
+    },
+
+    generateShows(shows) {
+      // convert datalayer shows object to a real array
+      const showsArray = Object.keys(shows).map(key =>
+        shows[key]
+      );
+
+      // add global filtering of shows which should affect all
+      // view variations
+      this.$store.state.shows = showsArray;
     },
 
     // generates the days and pushes them into $store
@@ -132,4 +144,52 @@ export default {
 </script>
 
 <style lang="scss">
+@import "~family.scss/source/src/family";
+
+.play-times {
+  // playtimes styling for days view
+  .shows__view--movies & {
+    display: flex;
+    align-items: stretch;
+    margin: 0;
+    list-style-type: none;
+    flex-direction: column;
+    padding: 0;
+
+    > li {
+      flex-grow: 1;
+      text-align: center;
+      margin-top: 1px;
+      width: 100%;
+    }
+  }
+
+  // playtimes styling for days view
+  .shows__view--days & {
+    display: flex;
+    align-items: stretch;
+    margin: 0;
+    list-style-type: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    > li {
+      flex-grow: 1;
+      text-align: center;
+      width: 16.666667%;
+      
+      @include at-least(5) {
+        margin-top: 1px;
+      }
+
+      @include every(6) { 
+        margin-left: 0;
+      }
+
+      + li {
+        margin-left: 1px;
+      }
+    }
+  }
+}
 </style>

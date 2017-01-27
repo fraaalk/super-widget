@@ -37,8 +37,8 @@
         v-if="dayIndex === selectedDay">
         <ul class="ui-list ui-list--shows">
           <li class="grid grid--align-center"
-            v-if="shows[dayIndex].hasShows"
-            v-for="(show, showName) in shows[dayIndex].shows">
+            v-if="processedShows[dayIndex].hasShows"
+            v-for="(show, showName) in processedShows[dayIndex].shows">
             <div class="grid__col-12 grid__col-md-4 grid__cell">
               {{ showName }}
             </div>
@@ -58,7 +58,7 @@
               </li>
             </ul>
           </li>
-          <li v-if="!shows[dayIndex].hasShows">
+          <li v-if="!processedShows[dayIndex].hasShows">
             <p class="u-text-center">
               No data available for the selected date.
             </p>
@@ -100,9 +100,9 @@ export default {
           none: 3,
           xs: 4,
           sm: 5,
-          md: 5,
-          lg: 7,
-          xlg: 7,
+          md: 6,
+          lg: 6,
+          xlg: 6,
         },
       },
     };
@@ -113,16 +113,18 @@ export default {
       'now',
       'today',
       'days',
+      'shows',
     ]),
     carouselId() {
       return `${this._uid}-carousel`;
     },
 
-    shows() {
+    processedShows() {
       const days = [];
+      const shows = this.shows;
 
       this.days.forEach((day, dayIndex) => {
-        const showsForDay = this.getShowsForDay(day.timestamp, DataLayer.get('shows'));
+        const showsForDay = this.getShowsForDay(day.timestamp, shows);
         days[dayIndex] = {
           shows: _.groupBy(showsForDay, 'name'),
           hasShows: showsForDay.length,
@@ -165,33 +167,5 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-@import "~family.scss/source/src/family";
-
-.play-times {
-  display: flex;
-  align-items: stretch;
-  margin: 0;
-  list-style-type: none;
-  flex-direction: row;
-  flex-wrap: wrap;
-
-  > li {
-    flex-grow: 1;
-    text-align: center;
-    width: 16.666667%;
-    
-    @include at-least(5) {
-      margin-top: 1px;
-    }
-
-    @include every(6) { 
-      margin-left: 0;
-    }
-
-    + li {
-      margin-left: 1px;
-    }
-  }
-}
+<style lang="scss">
 </style>

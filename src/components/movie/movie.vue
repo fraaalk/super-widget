@@ -54,7 +54,7 @@
             </template>
           </div>
 
-          <ul class="schedule__times">
+          <ul class="play-times">
             <li v-for="(show, time) in day.shows">
               <a v-if="show.length"
                 class="ui-button ui-button--cta" 
@@ -253,10 +253,8 @@ export default {
 };
 </script>
 
-<style lang="scss">
-.movie {
-  &__pre-sale {
-    margin: 1em;
-  }
+<style lang="scss" scoped>
+.movie__pre-sale {
+  margin: 1em;
 }
 </style>

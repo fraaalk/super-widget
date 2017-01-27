@@ -2,7 +2,7 @@
   <div class="shows__view shows__view--shows">
     <ul class="ui-list ui-list--movies">
       <li 
-        v-for="show in shows" 
+        v-for="show in processedShows" 
         v-if="now < show.start">
         <a class="ui-link ui-link--silent grid grid--align-center" 
           :href="show.url">
@@ -27,10 +27,8 @@
 </template>
 
 <script>
-import sortBy from 'lodash/sortBy';
 import { mapGetters } from 'vuex';
-
-import DataLayer from './../../services/data-layer';
+import sortBy from 'lodash/sortBy';
 
 const _ = {
   sortBy,
@@ -41,11 +39,11 @@ export default {
     // get now vuex store
     ...mapGetters([
       'now',
-      'today',
+      'shows',
     ]),
 
-    shows() {
-      return _.sortBy(DataLayer.get('shows'), 'start');
+    processedShows() {
+      return _.sortBy(this.shows, 'start');
     },
   },
 };
