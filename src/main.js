@@ -1,6 +1,7 @@
 // The following line loads the standalone build of Vue instead of the runtime-only build,
 // so you don't have to do: import Vue from 'vue/dist/vue'
 // This is done with the browser options. For the config, see package.json
+import 'lazysizes';
 import formatDate from 'date-format';
 import Vue from 'vue';
 
@@ -8,7 +9,7 @@ import App from './App';
 import Store from './services/store';
 
 Vue.filter('localizeTime',
-  timestamp => `${formatDate('hh', new Date(timestamp))}:${formatDate('mm', new Date(timestamp))}`
+  timestamp => `${formatDate('hh:mm', new Date(timestamp))}`
 );
 
 Vue.filter('localizeDate',

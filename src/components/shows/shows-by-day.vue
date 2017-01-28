@@ -76,17 +76,11 @@
 </template>
 
 <script>
-import groupBy from 'lodash/groupBy';
 import formatDate from 'date-format';
-
 import { mapGetters } from 'vuex';
 import Carousel from './../carousel/carousel';
 import CarouselSlide from './../carousel/carousel-slide';
 import DataLayer from './../../services/data-layer';
-
-const _ = {
-  groupBy,
-};
 
 export default {
   data() {
@@ -105,19 +99,25 @@ export default {
     };
   },
   computed: {
-    // get today and days array from vuex store
     ...mapGetters([
       'now',
       'today',
       'days',
       'shows',
     ]),
+
+    /**
+     * Returns a unique identifier as carouselId to store the
+     * current state of carousel in vuex
+     */
     carouselId() {
       return `${this._uid}-carousel`;
     },
 
     /**
-     * Returns
+     * Returns a copy of the days array which is enriched
+     * with the shows per day grouped by show name
+     * @returns {Array} - Array of days
      */
     processedShows() {
       const days = [];
@@ -126,8 +126,14 @@ export default {
       this.days.forEach((day, dayIndex) => {
         const showsForDay = this.getShowsForDay(day.timestamp, shows);
         days[dayIndex] = {
-          shows: _.groupBy(showsForDay, 'name'),
           hasShows: showsForDay.length,
+
+          // Group showsForDay by show name
+          shows: showsForDay.reduce((group, show) => {
+            group[show.name] = group[show.name] || [];
+            group[show.name].push(show);
+            return group;
+          }, {}),
         };
       });
 

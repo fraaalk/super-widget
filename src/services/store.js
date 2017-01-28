@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     now: Date.now(),
-    activeLayout: 'days',
+    activeLayout: 'movies',
     days: [],
     shows: [],
     components: {},

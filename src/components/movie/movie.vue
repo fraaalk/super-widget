@@ -19,7 +19,8 @@
               <template v-if="movie.lazyImage">
                 <img 
                   class="ui-image ui-image--responsive ui-image--lazyload" 
-                  :src="'https://www.kinoheld.de' + movie.lazyImage" 
+                  :data-src="'https://www.kinoheld.de' + movie.lazyImage"
+                  :src= "movie.previewImage"
                   :alt="movie.name">
               </template>
               <template v-else>
@@ -60,7 +61,7 @@
                 class="ui-button ui-button--cta" 
                 :href="show[0].url"
                 :class="{'is-disabled': now >= show[0].start}">
-                {{ time }}
+                <span>{{ time }}</span>
               </a>
               <span 
                 v-if="!show.length"
@@ -151,9 +152,6 @@ export default {
     };
   },
   computed: {
-    /**
-     * Fetches common getters from vuex for the component
-     */
     ...mapGetters([
       'now',
       'today',
@@ -173,7 +171,7 @@ export default {
      */
     timeTable() {
       const playTimes = this.movie.shows.map(
-        show => `${formatDate('hh', new Date(show.start))}:${formatDate('mm', new Date(show.start))}`
+        show => `${formatDate('hh:mm', new Date(show.start))}`
       );
 
       // Return a unique array of the playtimes

@@ -34,7 +34,6 @@ import { mapGetters } from 'vuex';
 
 export default {
   computed: {
-    // get now vuex store
     ...mapGetters([
       'now',
       'shows',
@@ -42,6 +41,7 @@ export default {
 
     /**
      * Returns all shows sorted ascending by start time
+     * @returns {Array} - Array of sorted shows
      */
     processedShows() {
       const shows = this.shows;
