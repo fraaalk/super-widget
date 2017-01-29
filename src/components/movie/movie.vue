@@ -18,8 +18,8 @@
             <div class="ui-aspect__inner">
               <template v-if="movie.lazyImage">
                 <img 
-                  class="ui-image ui-image--responsive ui-image--lazyload" 
-                  :data-src="'https://www.kinoheld.de' + movie.lazyImage"
+                  class="ui-image ui-image--responsive ui-image--lazyload"
+                  v-lazy="'https://www.kinoheld.de' + movie.lazyImage"
                   :src= "movie.previewImage"
                   :alt="movie.name">
               </template>
@@ -92,30 +92,14 @@
     <div class="grid__col-7 grid__col-sm-9 grid__col-md-10">
       <div class="movie-info movie-info--short">
         <dl class="ui-defintion-list ui-definition-list--inline">
-            <dt v-if="movie.duration">
-              Duration
-            </dt>
-            <dd v-if="movie.duration">
-              {{ movie.duration }}
-            </dd>
-            <dt v-if="movie.ageRating">
-              AgeRating
-            </dt>
-            <dd v-if="movie.ageRating">
-              {{ movie.ageRating }}
-            </dd>
-            <dt v-if="movie.language">
-              Language <template v-if="movie.subtitle">/ Subtitle </template>
-            </dt>
-            <dd v-if="movie.language">
-              {{ movie.language }} <template v-if="movie.subtitle"> / {{ movie.subtitle }}</template>
-            </dd>
-            <dt v-if="movie.genre">
-              Genre
-            </dt>
-            <dd>
-              {{ movie.genre }}
-            </dd>
+            <dt v-if="movie.duration">{{ $t('duration') }}</dt>
+            <dd v-if="movie.duration">{{ movie.duration }}</dd>
+            <dt v-if="movie.ageRating">{{ $t('ageRating') }}</dt>
+            <dd v-if="movie.ageRating">{{ movie.ageRating }}</dd>
+            <dt v-if="movie.language">{{ $t('language') }}<template v-if="movie.subtitle"> / {{ $t('subtitle') }}</template></dt>
+            <dd v-if="movie.language">{{ movie.language }} <template v-if="movie.subtitle"> / {{ movie.subtitle }}</template></dd>
+            <dt v-if="movie.genre">{{ $t('genre') }}</dt>
+            <dd>{{ movie.genre }}</dd>
         </dl>
       </div>
     </div>

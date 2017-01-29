@@ -2,7 +2,7 @@
   <div class="shows__view shows__view--shows">
     <ul class="ui-list ui-list--shows">
       <li 
-        v-for="show in processedShows" 
+        v-for="show in showsList" 
         v-if="now < show.start">
         <a class="ui-link ui-link--silent grid grid--align-center" 
           :href="show.url">
@@ -43,7 +43,7 @@ export default {
      * Returns all shows sorted ascending by start time
      * @returns {Array} - Array of sorted shows
      */
-    processedShows() {
+    showsList() {
       const shows = this.shows;
 
       return shows.sort((a, b) =>

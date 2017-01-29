@@ -11,11 +11,10 @@
           <div class="ui-button-group">
             <button type="button" class="ui-button ui-button--secondary"
               v-for="button in layouts"
-              :title="button.title"
+              :title="$t(`showsList.switch.${button.key}`)"
               :class="{'is-active': (activeLayout == button.key)}"
               @click="setLayout(button.key)">
-                <kh-svg-icon
-                  icon-class="ui-button__icon"
+                <kh-svg-icon icon-class="ui-button__icon"
                   :icon-xlink="button.icon">
                 </kh-svg-icon>
               </button>
@@ -25,7 +24,9 @@
 
       <transition mode="out-in" name="transition-fade">
         <keep-alive>
-          <component :is="'kh-shows-by-' + activeLayout"></component>
+          <component 
+            :is="'kh-shows-by-' + activeLayout">
+          </component>
         </keep-alive>
       </transition>
     </div>
@@ -47,17 +48,14 @@ export default {
       layouts: [
         {
           key: 'movies',
-          title: 'Filmansicht',
           icon: '#svg-view_module',
         },
         {
           key: 'days',
-          title: 'Tagesansicht',
           icon: '#svg-view_column',
         },
         {
           key: 'shows',
-          title: 'Listenansicht',
           icon: '#svg-view_list',
         },
       ],
@@ -70,13 +68,20 @@ export default {
     'kh-svg-icon': SVGIcon,
   },
   computed: {
+    /**
+     * Returns the currently active layout from vuex
+     * @returns {String} - Active layout (movies, days, shows)
+     */
     activeLayout() {
       return this.$store.state.activeLayout;
     },
 
+    /**
+     * Returns the translated title
+     * @returns {String} - Translated title
+     */
     title() {
-      // should be title
-      return this.$store.state.activeLayout;
+      return this.$t(`showsList.title.${this.activeLayout}`);
     },
   },
   created() {

@@ -19,10 +19,6 @@ $pageVariations: (
     padding: 0 0 30px 0;
   }
 
-  .ui-widget-header & {
-    padding-top: 56px; // widget header is 56px
-  }
-
   // page wrapper
   &__wrapper {
     padding: 0 10px;

@@ -23,12 +23,13 @@
     "data-layer-helper": "^0.1.0",
     "date-format": "^1.0.0",
     "family.scss": "^1.0.8",
-    "lazysizes": "^3.0.0-rc3",
     "lodash": "^4.17.4",
     "normalize-scss": "^6.0.0",
     "object-assign": "^4.1.1",
     "reflex-grid": "^1.3.0",
     "vue": "^2.1.0",
+    "vue-i18n": "^4.10.0",
+    "vue-lazyload": "^1.0.0-rc9",
     "vuex": "^2.1.1"
   },
   "devDependencies": {
