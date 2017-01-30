@@ -1,16 +1,18 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import DataLayer from './../services/data-layer';
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
     now: Date.now(),
-    activeLayout: 'movies',
+    activeLayout: 'days',
     days: [],
     shows: [],
     components: {},
     viewport: {},
+    config: DataLayer.get('config'),
   },
   mutations: {
     UPDATE_VIEWPORT(state, payload) {
@@ -30,10 +32,7 @@ export default new Vuex.Store({
     shows: state => state.shows,
     days: state => state.days,
     now: state => state.now,
-    today: (state) => {
-      const dateNow = new Date(state.now);
-      return dateNow.setHours(0, 0, 0, 0);
-    },
+    config: state => state.config,
     currentBreakpoint: state => state.viewport.breakpoint,
   },
 });

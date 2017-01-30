@@ -21,7 +21,7 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import formatDate from 'date-format';
+// import formatDate from 'date-format';
 import objectAssign from 'object-assign';
 import orderBy from 'lodash/orderBy';
 import map from 'lodash/map';
@@ -36,7 +36,6 @@ const _ = {
   orderBy,
   groupBy,
   map,
-  // flatten,
 };
 
 export default {
@@ -49,7 +48,6 @@ export default {
   computed: {
     ...mapGetters([
       'shows',
-      'today',
     ]),
 
     /**
@@ -57,7 +55,6 @@ export default {
      * @returns {Array} - Array of computed, extended movies
      */
     showsCluster() {
-      const dateToday = formatDate('dd.MM.', new Date(this.today));
       // Start off by grouping the shows by show name
       const showsGroup = this.shows.reduce((group, show) => {
         group[show.name] = group[show.name] || [];
@@ -102,22 +99,27 @@ export default {
       // is sort criteria number 1 for displaying the cluster
       const enrichedShowsCluster = _.map(showsCluster, (showsForCluster) => {
         let showsTotal = 0;
-        let showsToday = 0;
+        const showsToday = this.getShowsForDay(this.now, showsForCluster);
+        let firstShow = null;
 
         showsForCluster.forEach((shows) => {
           showsTotal += shows.showsTotal;
-          showsToday += formatDate('dd.MM.', new Date(shows.firstShow)) === dateToday;
+
+          if (!firstShow || shows.firstShow < firstShow) {
+            firstShow = shows.firstShow;
+          }
         });
 
         return {
           showsToday,
           showsTotal,
+          firstShow,
           shows: showsForCluster,
         };
       });
 
-      // Return the sorted cluster by showsTday and showsTotal
-      return _.orderBy(enrichedShowsCluster, ['showsToday', 'showsTotal'], ['desc', 'desc']);
+      // Return the sorted cluster by showsToday, firstShow and showsTotal
+      return _.orderBy(enrichedShowsCluster, ['showsToday', 'firstShow', 'showsTotal'], ['desc', 'asc', 'desc']);
     },
 
     /**
@@ -159,18 +161,18 @@ export default {
   },
   methods: {
     /**
-     * Returns the movie object if it fullfills the filter criterias
-     * @param {Object} movie - Object of computed movie
-     * @returns {Boolean} - Indicator wether to show or hide current movie
+     * Returns an object with shows for the given day
+     * @param {Number} dayTimestamp - The timestamp of the day to search for
+     * @param {Array} shows - The source array of shows to filter
+     * @returns {Array} - Filtered array of shows, sorted ascending by start time
      */
-    // matchesFilter(movie) {
-    //   let matchesFilter = false;
-
-    //   if (movie.name.toLowerCase().indexOf(this.filter) > -1) {
-    //     matchesFilter = true;
-    //   }
-    //   return matchesFilter;
-    // },
+    getShowsForDay(day, shows) {
+      return shows.filter(show =>
+        show.start > day && show.start < day + 86400000
+      ).sort((a, b) =>
+        a.start - b.start
+      );
+    },
   },
   components: {
     'kh-movie': Movie,

@@ -8,6 +8,7 @@ import formatDate from 'date-format';
 
 import App from './App';
 import Store from './services/store';
+import DataLayer from './services/data-layer';
 
 // @TODO load translations via DataLayer
 const locales = {
@@ -26,8 +27,10 @@ const locales = {
       duration: 'Duration',
       ageRating: 'Age Rating',
       language: 'Language',
-      subtitle: 'Subtitle',
+      subTitle: 'Subtitle',
       genre: 'Genre',
+      preSaleHint: 'Pre sales start on {date}',
+      noDataForTheSelectedDay: 'No data available for the selected date.',
     },
   },
   de: {
@@ -46,22 +49,25 @@ const locales = {
     duration: 'Dauer',
     ageRating: 'FSK',
     language: 'Sprache',
-    subtitle: 'Untertitel',
+    subTitle: 'Untertitel',
     genre: 'Genre',
+    preSaleHint: 'Vorverkauf für den {date}',
+    noDataForTheSelectedDay: 'Leider liegen uns für den gewählten Tag keine Daten vor.',
   },
 };
 
 Vue.filter('localizeTime',
-  timestamp => `${formatDate('hh:mm', new Date(timestamp))}`
+  timestamp => `${formatDate('hh:mm', new Date(timestamp), DataLayer.get('config.timezoneOffset'))}`
 );
 
 Vue.filter('localizeDate',
-  timestamp => `${formatDate('dd.MM.', new Date(timestamp))}`
+  timestamp => `${formatDate('dd.MM.', new Date(timestamp), DataLayer.get('config.timezoneOffset'))}`
 );
 
 Vue.filter('localizeWeekDay', (timestamp) => {
   const date = new Date(timestamp);
-  return window.dataLayer[0].config.weekDays[date.getDay()];
+  const weekDays = DataLayer.get('config.weekDays');
+  return weekDays[date.getDay()];
 });
 
 // VueLazyload: https://github.com/hilongjw/vue-lazyload

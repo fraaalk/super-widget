@@ -34,8 +34,7 @@
 </template>
 
 <script>
-// import formatDate from 'date-format';
-
+import { mapGetters } from 'vuex';
 import SVGIcon from './SVGIcon';
 import Movies from './../components/shows/shows-by-movie';
 import Shows from './../components/shows/shows-by-show';
@@ -68,6 +67,11 @@ export default {
     'kh-svg-icon': SVGIcon,
   },
   computed: {
+    ...mapGetters([
+      'now',
+      'shows',
+    ]),
+
     /**
      * Returns the currently active layout from vuex
      * @returns {String} - Active layout (movies, days, shows)
@@ -85,15 +89,14 @@ export default {
     },
   },
   created() {
-    const showDates = Object.keys(DataLayer.get('shows')).map(show =>
-      DataLayer.get(`shows.${show}.start`)
-    );
+    this.generateShows(DataLayer.get('shows'));
 
-    const endDate = Math.max(...showDates);
-    const startDate = Date.now();
+    // @TODO: check for set start / end date
+    const endDate = DataLayer.get('config.widget.endDate');
+    const startDate = DataLayer.get('config.widget.startDate');
+
 
     this.generateDays(startDate, endDate);
-    this.generateShows(DataLayer.get('shows'));
     // this.tickNow();
   },
   methods: {
@@ -109,10 +112,18 @@ export default {
       }, 1000);
     },
 
+    /**
+     * Returns a real array of the shows object provided by
+     * the datalayer.
+     * @returns {Array} - Shows array sorted ascending by start
+     */
     generateShows(shows) {
-      // convert datalayer shows object to a real array
+      // Convert datalayer shows object to a real array
+      // and sort it by start ascending
       const showsArray = Object.keys(shows).map(key =>
         shows[key]
+      ).sort((a, b) =>
+        a.start - b.start
       );
 
       // add global filtering of shows which should affect all
@@ -121,27 +132,15 @@ export default {
     },
 
     // generates the days and pushes them into $store
-    generateDays(inputStartDate, inputEndDate) {
-      const startDate = new Date(parseInt(inputStartDate, 10));
-      const endDate = new Date(parseInt(inputEndDate, 10));
-      const date = new Date(startDate);
-      let displayDays;
-
-      date.setHours(0, 0, 0, 0);
-      endDate.setHours(0, 0, 0, 0);
-      startDate.setHours(0, 0, 0, 0);
-      displayDays = (endDate.getTime() - startDate.getTime()) / 86400000;
-
-      // displayDays should be at least a week
-      if (displayDays < 7) {
-        displayDays = 7;
-      }
+    generateDays(startDate, endDate) {
+      const displayDays = Math.ceil((endDate - startDate) / 86400000) < 7
+        ? 7
+        : Math.ceil((endDate - startDate) / 86400000);
+      let date = startDate;
 
       for (let i = 0; i <= displayDays; i += 1) {
-        this.$store.state.days.push({
-          timestamp: new Date(date).getTime(),
-        });
-        date.setDate(date.getDate() + 1);
+        this.$store.state.days.push(date);
+        date += 86400000;
       }
     },
   },

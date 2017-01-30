@@ -19,6 +19,7 @@
     "ios_saf > 7.1"
   ],
   "dependencies": {
+    "array.prototype.findindex": "^2.0.0",
     "breakpoint-sass": "^2.7.1",
     "data-layer-helper": "^0.1.0",
     "date-format": "^1.0.0",

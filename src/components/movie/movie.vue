@@ -43,20 +43,20 @@
         :componentId="carouselId">
 
         <kh-carousel-slide 
-          v-for="(day, index) in schedule"
+          v-for="(day, index) in days"
           :slideIndex="index"
           :componentId="carouselId">
           <div class="ui-button ui-button--secondary u-no-wrap is-inactive">
-            <template v-if="today == day.timestamp">
+            <template v-if="getFormattedDay(now) == getFormattedDay(day)">
               <strong>Heute</strong>
             </template>
             <template v-else>
-              {{ day.timestamp | localizeWeekDay }} {{ day.timestamp | localizeDate }}
+              {{ day | localizeWeekDay }} {{ day | localizeDate }}
             </template>
           </div>
 
           <ul class="play-times">
-            <li v-for="(show, time) in day.shows">
+            <li v-for="(show, time) in schedule[index]">
               <a v-if="show.length"
                 class="ui-button ui-button--cta" 
                 :href="show[0].url"
@@ -79,7 +79,9 @@
           :class="{'is-hidden': hidePreSaleButton }"
           @click="goToFirstShow">
           <div class="ui-button__inner">
-            <span>{{ movie.firstShow | localizeWeekDay }} {{ movie.firstShow | localizeDate }}</span>
+            <span class="ui-button__text">
+              {{ preSaleButtonHint }}
+            </span>
             <kh-svg-icon
               icon-class="ui-button__icon"
               icon-xlink="#svg-keyboard_arrow_right">
@@ -107,6 +109,7 @@
 </template>
 
 <script>
+import 'array.prototype.findindex';
 import { mapGetters } from 'vuex';
 import formatDate from 'date-format';
 import SVGIcon from './../SVGIcon';
@@ -138,8 +141,8 @@ export default {
   computed: {
     ...mapGetters([
       'now',
-      'today',
       'days',
+      'config',
     ]),
 
     /**
@@ -155,11 +158,10 @@ export default {
      */
     timeTable() {
       const playTimes = this.movie.shows.map(
-        show => `${formatDate('hh:mm', new Date(show.start))}`
+        show => `${formatDate('hh:mm', new Date(show.start), this.config.timezoneOffset)}`
       );
 
       // Return a unique array of the playtimes
-      // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Set
       return [...new Set(playTimes)];
     },
 
@@ -171,60 +173,101 @@ export default {
 
       firstShow.setHours(0, 0, 0, 0);
 
-      // @TODO check for polyfill (babel)
-      // https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
       return this.days.findIndex(day =>
-        day.timestamp === firstShow.getTime()
+        day === firstShow.getTime()
       );
     },
 
-    scheduleCarousel() {
+    /**
+     * Returns a reference to the carousel component stored in vuex
+     * @returns {Object} - Carousel object
+     */
+    carousel() {
       return this.$store.state.components[this.carouselId];
     },
 
+    /**
+     * Returns a boolean, wether or not the pre sale button should be shown or not
+     * @returns {Boolean} - Indicator to hide pre sale button
+     */
     hidePreSaleButton() {
-      const carousel = this.scheduleCarousel;
+      const carousel = this.carousel;
       let hideButton = false;
 
-      if (!carousel) {
-        hideButton = true;
-      } else if (carousel.currentSlide > this.firstShowDayIndex - carousel.visibleSlides) {
+      if (!carousel
+        || (carousel
+          && carousel.currentSlide > this.firstShowDayIndex - carousel.visibleSlides
+        )
+      ) {
         hideButton = true;
       }
 
       return hideButton;
     },
 
+    /**
+     * Returns the translated title for the pre sale button hint
+     * @returns {String} - Translated pre sale button hint
+     */
+    preSaleButtonHint() {
+      return this.$t('preSaleHint', {
+        date: formatDate('dd.MM.', new Date(this.movie.firstShow), this.config.timezoneOffset),
+      });
+    },
+
     schedule() {
       // fetch the relevant days from the days
       const days = this.days.filter((day, dayIndex) =>
-        this.movie.lastShow > day.timestamp || dayIndex <= 6
+        this.movie.lastShow > day || dayIndex <= 6
       );
 
-      return days.map((day) => {
+      const schedule = [];
+
+      days.forEach((day, dayIndex) => {
         // filter shows for each day
-        const showsForCurrentDay = this.movie.shows.filter(
-          show => formatDate('dd', new Date(show.start)) === formatDate('dd', new Date(day.timestamp))
-        );
+        const showsForCurrentDay = this.getShowsForDay(day, this.movie.shows);
         const dailySchedule = {};
 
         this.timeTable.forEach((time) => {
           dailySchedule[time] = showsForCurrentDay.filter(
-            show => formatDate('hh:mm', new Date(show.start)) === time
+            show => formatDate('hh:mm', new Date(show.start), this.config.timezoneOffset) === time
           );
         });
 
-        // return the extended day object with its daily shows
-        return {
-          ...day,
-          shows: dailySchedule,
-        };
+        schedule[dayIndex] = dailySchedule;
       });
+
+      return schedule;
     },
   },
   methods: {
     goToFirstShow() {
       EventBus.$emit(`${this.carouselId}.goTo`, this.firstShowDayIndex);
+    },
+
+    /**
+     * Returns an object with shows for the given day
+     * @param {Number} dayTimestamp - The timestamp of the day to search for
+     * @param {Array} shows - The source array of shows to filter
+     * @returns {Array} - Filtered array of shows, sorted ascending by start time
+     */
+    getShowsForDay(day, shows) {
+      return shows.filter(show =>
+        show.start > day && show.start < day + 86400000
+      ).sort((a, b) =>
+        a.start - b.start
+      );
+    },
+
+    /**
+     * Returns the formatted short day of the given timestamp
+     * @returns {String} - Formatted day in utc
+     */
+    getFormattedDay(timestamp) {
+      const format = this.config.dateFormats.short;
+      const offset = this.config.timezoneOffset;
+
+      return formatDate(format, new Date(timestamp), offset);
     },
   },
   components: {
@@ -235,7 +278,7 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .movie__pre-sale {
   margin: 1em;
 }

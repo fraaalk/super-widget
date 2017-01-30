@@ -18,11 +18,11 @@
               class="ui-button ui-button--secondary u-no-wrap"
               :class="{ 'is-active': index === selectedDay, 'is-inactive': index != selectedDay }"
               @click="goToDay(index)">
-              <template v-if="today == day.timestamp">
+              <template v-if="getFormattedDay(now) == getFormattedDay(day)">
                 <strong>Heute</strong>
               </template>
               <template v-else>
-                {{ day.timestamp | localizeWeekDay }} {{ day.timestamp | localizeDate }}
+                {{ day | localizeWeekDay }} {{ day | localizeDate }}
               </template>
             </div>
 
@@ -41,6 +41,9 @@
             v-for="(show, showName) in processedShows[dayIndex].shows">
             <div class="grid__col-12 grid__col-md-4 grid__cell">
               {{ showName }}
+              <span class="ui-flag" v-for="flag in show[0].flags">
+                {{ flag }}
+              </span>
             </div>
             <ul class="play-times grid__col-12 grid__col-md-8">
               <li v-for="(showTime, showTimeIndex) in show">
@@ -49,24 +52,18 @@
                   :href="showTime.url"
                   v-if="now < showTime.start">
                   <span>{{ showTime.start | localizeTime }}</span>
-                  <span class="ui-flag" v-for="flag in showTime.flags">
-                    {{ flag }}
-                  </span>
                 </a>
                 <div 
                   class="ui-button ui-button--cta is-disabled"
                   v-if="now > showTime.start">
                   <span>{{ showTime.start | localizeTime }}</span>
-                  <span class="ui-flag ui-flag--muted" v-for="(flag, flagName) in showTime.flags">
-                    {{ flag }}
-                  </span>
                 </div>
               </li>
             </ul>
           </li>
           <li v-if="!processedShows[dayIndex].hasShows">
             <p class="u-text-center">
-              No data available for the selected date.
+              {{ $t('noDataForTheSelectedDay') }}
             </p>
           </li>
         </ul>
@@ -76,11 +73,10 @@
 </template>
 
 <script>
-import formatDate from 'date-format';
 import { mapGetters } from 'vuex';
+import formatDate from 'date-format';
 import Carousel from './../carousel/carousel';
 import CarouselSlide from './../carousel/carousel-slide';
-import DataLayer from './../../services/data-layer';
 
 export default {
   data() {
@@ -101,9 +97,9 @@ export default {
   computed: {
     ...mapGetters([
       'now',
-      'today',
       'days',
       'shows',
+      'config',
     ]),
 
     /**
@@ -124,7 +120,7 @@ export default {
       const shows = this.shows;
 
       this.days.forEach((day, dayIndex) => {
-        const showsForDay = this.getShowsForDay(day.timestamp, shows);
+        const showsForDay = this.getShowsForDay(day, shows);
         days[dayIndex] = {
           hasShows: showsForDay.length,
 
@@ -147,16 +143,23 @@ export default {
      * @param {Array} shows - The source array of shows to filter
      * @returns {Array} - Filtered array of shows, sorted ascending by start time
      */
-    getShowsForDay(dayTimestamp, shows) {
-      const dateFormat = DataLayer.get('config.dateFormats.short');
-      const timezoneOffset = DataLayer.get('config.timezoneOffset');
-      const currentDay = formatDate(dateFormat, new Date(dayTimestamp), timezoneOffset);
-
+    getShowsForDay(day, shows) {
       return shows.filter(show =>
-        currentDay === formatDate(dateFormat, new Date(show.start), timezoneOffset)
+        show.start > day && show.start < day + 86400000
       ).sort((a, b) =>
         a.start - b.start
       );
+    },
+
+    /**
+     * Returns the formatted short day of the given timestamp
+     * @returns {String} - Formatted day in utc
+     */
+    getFormattedDay(timestamp) {
+      const format = this.config.dateFormats.short;
+      const offset = this.config.timezoneOffset;
+
+      return formatDate(format, new Date(timestamp), offset);
     },
 
     /**
