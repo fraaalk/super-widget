@@ -31,7 +31,9 @@
       </div>
     </div>
 
-    <transition mode="out-in" name="transition-fade">
+    <transition mode="out-in" name="custom-transition-classes"
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut">
       <template 
         v-for="(day, dayIndex) in days"
         v-if="dayIndex === selectedDay">

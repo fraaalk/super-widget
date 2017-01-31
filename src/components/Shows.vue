@@ -38,7 +38,7 @@
           </div>
         </header>
 
-        <transition mode="out-in" name="transition-fade"
+        <transition name="custom-transition-classes"
           enter-active-class="animated slideInDown"
           leave-active-class="animated slideOutUp">
           <div v-if="showFilters">
@@ -53,7 +53,9 @@
           </div>
         </transition>
 
-        <transition mode="out-in" name="transition-fade">
+        <transition mode="out-in" name="custom-transition-classes"
+          enter-active-class="animated fadeIn"
+          leave-active-class="animated fadeOut">
           <keep-alive>
             <component 
               :is="'kh-shows-by-' + activeLayout">
@@ -184,8 +186,15 @@ export default {
 
 <style lang="scss">
 @import "~family.scss/source/src/family";
+@import "~animate.css/source/_base";
 @import "~animate.css/source/sliding_entrances/slideInDown";
 @import "~animate.css/source/sliding_exits/slideOutUp";
+@import "~animate.css/source/fading_entrances/fadeIn";
+@import "~animate.css/source/fading_exits/fadeOut";
+
+// .animated {
+//   animation-duration: 0.7s
+// }
 
 .shows__controls {
   display: flex;
