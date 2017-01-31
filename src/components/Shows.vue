@@ -1,36 +1,51 @@
 <template>
-  <section class="page__wrapper page__wrapper--light">
+  <div class="page__wrapper page__wrapper--light">
     <div class="page__content">
-      <header class="ui-header ui-header--bordered grid grid--align-center">
-        <div class="grid__col-12 grid__col-xs-8 grid__col-lg-10 u-bleed-left">
-            <h2 class="ui-title ui-title--small">
-              {{ title }}
-            </h2>
-        </div>
-        <div class="grid__col-12 grid__col-xs-4 grid__col-lg-2 u-bleed-right">
-          <div class="ui-button-group">
-            <button type="button" class="ui-button ui-button--secondary"
-              v-for="button in layouts"
-              :title="$t(`showsList.switch.${button.key}`)"
-              :class="{'is-active': (activeLayout == button.key)}"
-              @click="setLayout(button.key)">
-                <kh-svg-icon icon-class="ui-button__icon"
-                  :icon-xlink="button.icon">
-                </kh-svg-icon>
-              </button>
+      <div class="shows">
+        <header class="ui-header ui-header--bordered grid grid--align-center">
+          <div class="grid__col-12 grid__col-xs-8 grid__col-lg-9 grid--order-2 grid--order-1-xs u-bleed-left">
+              <h2 class="ui-title ui-title--small">
+                {{ title }}
+              </h2>
           </div>
-        </div>
-      </header>
+          <div class="grid__col-12 grid__col-xs-4 grid__col-lg-3 grid--order-1 grid--order-2-xs u-bleed-left u-bleed-right">
+            <div class="shows__controls">
+              <button 
+                type="button" 
+                class="shows__controls-search ui-button ui-button--secondary ui-corners"
+                :title="$t('searchAndFilterShows')">
+                <div class="ui-button__inner">
+                  <kh-svg-icon icon-class="ui-button__icon" icon-xlink="#svg-magnifier"></kh-svg-icon>
+                </div>
+              </button>
 
-      <transition mode="out-in" name="transition-fade">
-        <keep-alive>
-          <component 
-            :is="'kh-shows-by-' + activeLayout">
-          </component>
-        </keep-alive>
-      </transition>
+              <div class="shows__controls-layout ui-button-group">
+                <button 
+                  type="button" 
+                  class="ui-button ui-button--secondary"
+                  v-for="button in layouts"
+                  :title="$t(`showsList.switch.${button.key}`)"
+                  :class="{'is-active': (activeLayout == button.key)}"
+                  @click="setLayout(button.key)">
+                    <kh-svg-icon icon-class="ui-button__icon"
+                      :icon-xlink="button.icon">
+                    </kh-svg-icon>
+                  </button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <transition mode="out-in" name="transition-fade">
+          <keep-alive>
+            <component 
+              :is="'kh-shows-by-' + activeLayout">
+            </component>
+          </keep-alive>
+        </transition>
+      </div>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
@@ -85,7 +100,7 @@ export default {
      * @returns {String} - Translated title
      */
     title() {
-      return this.$t(`showsList.title.${this.activeLayout}`);
+      return `${this.$t('program')} - ${this.$t(`showsList.title.${this.activeLayout}`)}`;
     },
   },
   created() {
@@ -149,6 +164,19 @@ export default {
 
 <style lang="scss">
 @import "~family.scss/source/src/family";
+
+.shows__controls {
+  display: flex;
+
+  &-search {
+    width: 25%;
+    margin-right: 0.5em;
+  }
+
+  &-layout {
+    width: calc(75% - 0.5em);
+  }
+}
 
 .play-times {
   // playtimes styling for days view

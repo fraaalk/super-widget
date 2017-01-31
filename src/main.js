@@ -28,9 +28,11 @@ const locales = {
       ageRating: 'Age Rating',
       language: 'Language',
       subTitle: 'Subtitle',
+      program: 'Program',
       genre: 'Genre',
       preSaleHint: 'Pre sales start on {date}',
       noDataForTheSelectedDay: 'No data available for the selected date.',
+      searchAndFilterShows: 'Search and filter shows',
     },
   },
   de: {
@@ -51,8 +53,10 @@ const locales = {
     language: 'Sprache',
     subTitle: 'Untertitel',
     genre: 'Genre',
+    program: 'Programm',
     preSaleHint: 'Vorverkauf für den {date}',
     noDataForTheSelectedDay: 'Leider liegen uns für den gewählten Tag keine Daten vor.',
+    searchAndFilterShows: 'Vorstellungen suchen und filtern',
   },
 };
 
