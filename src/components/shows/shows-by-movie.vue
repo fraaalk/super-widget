@@ -1,14 +1,5 @@
 <template>
   <div class="shows__view shows__view--movies">
-    <!-- <input 
-      placeholder="... nach einem Film suchen"
-      type="text" 
-      v-model="filter">
-    <label>
-    <input type="checkbox"
-      v-model="reverse">
-      reverse list?
-    </label> -->
     <ul class="ui-list ui-list--movies">
       <template v-for="showsGroup in showsCluster">
         <li v-for="shows in showsGroup.shows" style="overflow:hidden;">

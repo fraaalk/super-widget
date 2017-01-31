@@ -12,8 +12,10 @@
             <div class="shows__controls">
               <button 
                 type="button" 
-                class="shows__controls-search ui-button ui-button--secondary ui-corners"
-                :title="$t('searchAndFilterShows')">
+                class="shows__controls-filter ui-button ui-button--secondary ui-corners"
+                :class="{'is-active': showFilters}"
+                :title="$t('searchAndFilterShows')"
+                @click="showFilters = !showFilters;">
                 <div class="ui-button__inner">
                   <kh-svg-icon icon-class="ui-button__icon" icon-xlink="#svg-magnifier"></kh-svg-icon>
                 </div>
@@ -35,6 +37,21 @@
             </div>
           </div>
         </header>
+
+        <transition mode="out-in" name="transition-fade"
+          enter-active-class="animated slideInDown"
+          leave-active-class="animated slideOutUp">
+          <div v-if="showFilters">
+            <input 
+              placeholder="... nach einem Film suchen"
+              type="text" 
+              v-model="filter">
+            
+            <label>
+              <input type="checkbox" v-model="reverse">reverse list?
+            </label>
+          </div>
+        </transition>
 
         <transition mode="out-in" name="transition-fade">
           <keep-alive>
@@ -59,6 +76,9 @@ import DataLayer from './../services/data-layer';
 export default {
   data() {
     return {
+      filter: '',
+      reverse: false,
+      showFilters: false,
       layouts: [
         {
           key: 'movies',
@@ -164,11 +184,13 @@ export default {
 
 <style lang="scss">
 @import "~family.scss/source/src/family";
+@import "~animate.css/source/sliding_entrances/slideInDown";
+@import "~animate.css/source/sliding_exits/slideOutUp";
 
 .shows__controls {
   display: flex;
 
-  &-search {
+  &-filter {
     width: 25%;
     margin-right: 0.5em;
   }
