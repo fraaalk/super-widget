@@ -12,14 +12,14 @@
 
 <script>
 import { mapGetters } from 'vuex';
-// import formatDate from 'date-format';
 import objectAssign from 'object-assign';
 import orderBy from 'lodash/orderBy';
 import map from 'lodash/map';
 import groupBy from 'lodash/groupBy';
 import sortBy from 'lodash/sortBy';
+import showsMixin from './../shows/shows-mixin';
+import dateFormatMixin from './../../mixins/date-format';
 import DataLayer from './../../services/data-layer';
-
 import Movie from './../movie/movie';
 
 const _ = {
@@ -30,12 +30,10 @@ const _ = {
 };
 
 export default {
-  data() {
-    return {
-      filter: '',
-      reverse: false,
-    };
-  },
+  mixins: [
+    showsMixin,
+    dateFormatMixin,
+  ],
   computed: {
     ...mapGetters([
       'shows',
@@ -111,58 +109,6 @@ export default {
 
       // Return the sorted cluster by showsToday, firstShow and showsTotal
       return _.orderBy(enrichedShowsCluster, ['showsToday', 'firstShow', 'showsTotal'], ['desc', 'asc', 'desc']);
-    },
-
-    /**
-     * Returns an array of unique movie/show names
-     * @returns {Array} - Array of movies/show names
-     */
-    movieList() {
-      const movieList = this.movies.map(movie =>
-        movie.name
-      );
-      return [...new Set(movieList)];
-    },
-
-    /**
-     * Returns an array of unique flags
-     * @returns {Array} - Array of flags
-     */
-    flagList() {
-      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/Reduce#Flatten_an_array_of_arrays
-      const flagList = this.movies.map(movie =>
-        movie.flags
-      ).reduce((a, b) => a.concat(b));
-
-      return [...new Set(flagList)];
-    },
-
-    /**
-     * Returns the sorted list of the movies to be displayed
-     * after applying sorting
-     @ returns {Array} - Array of sorted movies
-     */
-    sortedMovies() {
-      const sortedMovies = _.sortBy(this.movies, 'name');
-
-      return !this.reverse
-        ? sortedMovies
-        : sortedMovies.reverse();
-    },
-  },
-  methods: {
-    /**
-     * Returns an object with shows for the given day
-     * @param {Number} dayTimestamp - The timestamp of the day to search for
-     * @param {Array} shows - The source array of shows to filter
-     * @returns {Array} - Filtered array of shows, sorted ascending by start time
-     */
-    getShowsForDay(day, shows) {
-      return shows.filter(show =>
-        show.start > day && show.start < day + 86400000
-      ).sort((a, b) =>
-        a.start - b.start
-      );
     },
   },
   components: {

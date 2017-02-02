@@ -47,11 +47,11 @@
           :slideIndex="index"
           :componentId="carouselId">
           <div class="ui-button ui-button--secondary u-no-wrap is-inactive">
-            <template v-if="getFormattedDay(now) == getFormattedDay(day)">
+            <template v-if="getFormattedShortDate(now) == getFormattedShortDate(day)">
               <strong>Heute</strong>
             </template>
             <template v-else>
-              {{ day | localizeWeekDay }} {{ day | localizeDate }}
+              {{ getFormattedWeekDay(day) }} {{ getFormattedShortDate(day) }}
             </template>
           </div>
 
@@ -61,7 +61,7 @@
                 class="ui-button ui-button--cta" 
                 :href="show[0].url"
                 :class="{'is-disabled': now >= show[0].start}">
-                <span>{{ time }}</span>
+                <span>{{ getFormattedTime(show[0].start) }}</span>
               </a>
               <span 
                 v-if="!show.length"
@@ -111,14 +111,19 @@
 <script>
 import 'array.prototype.findindex';
 import { mapGetters } from 'vuex';
-import formatDate from 'date-format';
 import SVGIcon from './../SVGIcon';
 import Carousel from './../carousel/carousel';
 import CarouselSlide from './../carousel/carousel-slide';
 import EventBus from './../../services/event-bus';
+import dateFormatMixin from './../../mixins/date-format';
 
 export default {
-  props: ['movie'],
+  mixins: [
+    dateFormatMixin,
+  ],
+  props: [
+    'movie',
+  ],
   data() {
     return {
       carouselConfig: {
@@ -158,7 +163,7 @@ export default {
      */
     timeTable() {
       const playTimes = this.movie.shows.map(
-        show => `${formatDate('hh:mm', new Date(show.start), this.config.timezoneOffset)}`
+        show => this.getFormattedTime(show.start)
       );
 
       // Return a unique array of the playtimes
@@ -211,7 +216,7 @@ export default {
      */
     preSaleButtonHint() {
       return this.$t('preSaleHint', {
-        date: formatDate('dd.MM.', new Date(this.movie.firstShow), this.config.timezoneOffset),
+        date: this.getFormattedShortDate(this.movie.firstShow),
       });
     },
 
@@ -230,7 +235,7 @@ export default {
 
         this.timeTable.forEach((time) => {
           dailySchedule[time] = showsForCurrentDay.filter(
-            show => formatDate('hh:mm', new Date(show.start), this.config.timezoneOffset) === time
+            show => this.getFormattedTime(show.start) === time
           );
         });
 
@@ -257,17 +262,6 @@ export default {
       ).sort((a, b) =>
         a.start - b.start
       );
-    },
-
-    /**
-     * Returns the formatted short day of the given timestamp
-     * @returns {String} - Formatted day in utc
-     */
-    getFormattedDay(timestamp) {
-      const format = this.config.dateFormats.short;
-      const offset = this.config.timezoneOffset;
-
-      return formatDate(format, new Date(timestamp), offset);
     },
   },
   components: {

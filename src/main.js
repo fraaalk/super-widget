@@ -4,11 +4,8 @@
 import Vue from 'vue';
 import VueLazyload from 'vue-lazyload';
 import VueI18n from 'vue-i18n';
-import formatDate from 'date-format';
-
 import App from './App';
 import Store from './services/store';
-import DataLayer from './services/data-layer';
 
 // @TODO load translations via DataLayer
 const locales = {
@@ -59,20 +56,6 @@ const locales = {
     searchAndFilterShows: 'Vorstellungen suchen und filtern',
   },
 };
-
-Vue.filter('localizeTime',
-  timestamp => `${formatDate('hh:mm', new Date(timestamp), DataLayer.get('config.timezoneOffset'))}`
-);
-
-Vue.filter('localizeDate',
-  timestamp => `${formatDate('dd.MM.', new Date(timestamp), DataLayer.get('config.timezoneOffset'))}`
-);
-
-Vue.filter('localizeWeekDay', (timestamp) => {
-  const date = new Date(timestamp);
-  const weekDays = DataLayer.get('config.weekDays');
-  return weekDays[date.getDay()];
-});
 
 // VueLazyload: https://github.com/hilongjw/vue-lazyload
 Vue.use(VueLazyload, {

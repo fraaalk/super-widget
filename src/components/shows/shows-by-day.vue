@@ -18,11 +18,11 @@
               class="ui-button ui-button--secondary u-no-wrap"
               :class="{ 'is-active': index === selectedDay, 'is-inactive': index != selectedDay }"
               @click="goToDay(index)">
-              <template v-if="getFormattedDay(now) == getFormattedDay(day)">
+              <template v-if="getFormattedShortDate(now) == getFormattedShortDate(day)">
                 <strong>Heute</strong>
               </template>
               <template v-else>
-                {{ day | localizeWeekDay }} {{ day | localizeDate }}
+                {{ getFormattedWeekDay(day) }} {{ getFormattedShortDate(day) }}
               </template>
             </div>
 
@@ -39,8 +39,8 @@
         v-if="dayIndex === selectedDay">
         <ul class="ui-list ui-list--shows">
           <li class="grid grid--align-center"
-            v-if="processedShows[dayIndex].hasShows"
-            v-for="(show, showName) in processedShows[dayIndex].shows">
+            v-if="showsList[dayIndex].hasShows"
+            v-for="(show, showName) in showsList[dayIndex].shows">
             <div class="grid__col-12 grid__col-md-4 grid__cell">
               {{ showName }}
               <span class="ui-flag" v-for="flag in show[0].flags">
@@ -53,17 +53,17 @@
                   class="ui-button ui-button--cta" 
                   :href="showTime.url"
                   v-if="now < showTime.start">
-                  <span>{{ showTime.start | localizeTime }}</span>
+                  <span>{{ getFormattedTime(showTime.start) }}</span>
                 </a>
                 <div 
                   class="ui-button ui-button--cta is-disabled"
                   v-if="now > showTime.start">
-                  <span>{{ showTime.start | localizeTime }}</span>
+                  <span>{{ getFormattedTime(showTime.start) }}</span>
                 </div>
               </li>
             </ul>
           </li>
-          <li v-if="!processedShows[dayIndex].hasShows">
+          <li v-if="!showsList[dayIndex].hasShows">
             <p class="u-text-center">
               {{ $t('noDataForTheSelectedDay') }}
             </p>
@@ -76,11 +76,16 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import formatDate from 'date-format';
+import showsMixin from './../shows/shows-mixin';
+import dateFormatMixin from './../../mixins/date-format';
 import Carousel from './../carousel/carousel';
 import CarouselSlide from './../carousel/carousel-slide';
 
 export default {
+  mixins: [
+    showsMixin,
+    dateFormatMixin,
+  ],
   data() {
     return {
       selectedDay: 0,
@@ -117,7 +122,7 @@ export default {
      * with the shows per day grouped by show name
      * @returns {Array} - Array of days
      */
-    processedShows() {
+    showsList() {
       const days = [];
       const shows = this.shows;
 
@@ -139,31 +144,6 @@ export default {
     },
   },
   methods: {
-    /**
-     * Returns an object with shows for the given day
-     * @param {Number} dayTimestamp - The timestamp of the day to search for
-     * @param {Array} shows - The source array of shows to filter
-     * @returns {Array} - Filtered array of shows, sorted ascending by start time
-     */
-    getShowsForDay(day, shows) {
-      return shows.filter(show =>
-        show.start > day && show.start < day + 86400000
-      ).sort((a, b) =>
-        a.start - b.start
-      );
-    },
-
-    /**
-     * Returns the formatted short day of the given timestamp
-     * @returns {String} - Formatted day in utc
-     */
-    getFormattedDay(timestamp) {
-      const format = this.config.dateFormats.short;
-      const offset = this.config.timezoneOffset;
-
-      return formatDate(format, new Date(timestamp), offset);
-    },
-
     /**
      * Displays the given day with its shows
      * @param {Number} index - The day index
