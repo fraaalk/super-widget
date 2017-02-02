@@ -224,6 +224,10 @@ export default {
       text-align: center;
       margin-top: 1px;
       width: 100%;
+
+      * {
+        flex-grow: 1;
+      }
     }
   }
 

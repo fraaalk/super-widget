@@ -7,8 +7,8 @@
         <a class="ui-link ui-link--silent grid grid--align-center" 
           :href="show.url">
             <div class="grid__col-3 grid__col-sm-2 grid__cell">
-              <span>{{ show.start | localizeWeekDay }} {{ show.start | localizeDate }}</span>
-              <span>{{ show.start | localizeTime }}</span>
+              <span>{{ getFormattedWeekDay(show.start) }} {{ getFormattedShortDate(show.start) }}</span>
+              <span>{{ getFormattedTime(show.start) }}</span>
             </div>
             <div class="grid__col-6 grid__col-sm-7 grid__cell">
               {{ show.name }}
@@ -31,8 +31,14 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import showsMixin from './../shows/shows-mixin';
+import dateFormatMixin from './../../mixins/date-format';
 
 export default {
+  mixins: [
+    showsMixin,
+    dateFormatMixin,
+  ],
   computed: {
     ...mapGetters([
       'now',

@@ -15,9 +15,22 @@ const dateMixin = {
     };
   },
   methods: {
-    /* Returns the correct time zone offset for the given show date
+    /**
+     * Returns the timestamp of the beginning of the given day.
+     * If no timestamp is provided, the current time is taken.
+     * @params {Number} - Timestamp
+     * @returns {Number} - Timestamp of the beginning of the day
+     */
+    getTimestampForDay(timestamp = Date.now()) {
+      const date = new Date(timestamp);
+      date.setHours(0, 0, 0, 0);
+      return date.getTime();
+    },
+
+    /**
+     * Returns the correct time zone offset for the given show date
      * which is saved in UTC and pushed as timestamp into the data layer
-     * @param {Object} - Date Object
+     * @param {Object} date - Date Object
      * @returns {Number} - The timezone offset
      */
     getTimezoneOffsetForShowDate(date) {
@@ -27,7 +40,8 @@ const dateMixin = {
     },
 
     /**
-     * Returns the formatted short day of the given timestamp
+     * Returns the formatted and localized short day of the given timestamp
+     * @param {Number} timestamp - Timestamp
      * @returns {String} - Formatted day in utc
      */
     getFormattedShortDate(timestamp) {
@@ -36,12 +50,22 @@ const dateMixin = {
       return formatDate(format, date, this.getTimezoneOffsetForShowDate(date));
     },
 
+    /**
+     * Returns the formatted and localized time if the given timestamp
+     * @param {Number} timestamp - Timestamp
+     * @returns {String} - Formatted time
+     */
     getFormattedTime(timestamp) {
       const format = 'hh:mm';
       const date = new Date(timestamp);
       return formatDate(format, date, this.getTimezoneOffsetForShowDate(date));
     },
 
+    /**
+     * Returns the formatted and localized time if the given timestamp
+     * @param {Number} timestamp - Timestamp
+     * @returns {String} - Formatted time
+     */
     getFormattedWeekDay(timestamp) {
       const weekDays = DataLayer.get('config.weekDays');
       const date = new Date(timestamp);

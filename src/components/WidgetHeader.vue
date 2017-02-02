@@ -138,7 +138,7 @@ $headerHeight: 56px;
       bottom: 0;
       left: 0;
       z-index: 99;
-      background-color: rgba(0,0,0,.54);
+      background: rgba(0,0,0,.54);
       transition: all .5s cubic-bezier(.35,0,.25,1);
       transition-property: opacity;
       will-change: opacity;

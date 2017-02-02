@@ -2,7 +2,7 @@
   <div class="shows__view shows__view--movies">
     <ul class="ui-list ui-list--movies">
       <template v-for="showsGroup in showsCluster">
-        <li v-for="shows in showsGroup.shows" style="overflow:hidden;">
+        <li v-for="shows in showsGroup.shows">
           <kh-movie :movie="shows"></kh-movie>
         </li>
       </template>
@@ -71,6 +71,7 @@ export default {
           firstShow: sortedShows[0].start,
           lastShow: sortedShows[sortedShows.length - 1].start,
           showsTotal: sortedShows.length,
+          showsToday: this.getShowsForDay(this.getTimestampForDay(), sortedShows).length,
         });
 
         // Afterwards cleanup unnecessary properties
@@ -88,11 +89,12 @@ export default {
       // is sort criteria number 1 for displaying the cluster
       const enrichedShowsCluster = _.map(showsCluster, (showsForCluster) => {
         let showsTotal = 0;
-        const showsToday = this.getShowsForDay(this.now, showsForCluster);
+        let showsToday = 0;
         let firstShow = null;
 
         showsForCluster.forEach((shows) => {
           showsTotal += shows.showsTotal;
+          showsToday += shows.showsToday;
 
           if (!firstShow || shows.firstShow < firstShow) {
             firstShow = shows.firstShow;
