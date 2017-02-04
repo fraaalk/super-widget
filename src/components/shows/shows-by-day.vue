@@ -18,11 +18,11 @@
               class="ui-button ui-button--secondary u-no-wrap"
               :class="{ 'is-active': index === selectedDay, 'is-inactive': index != selectedDay }"
               @click="goToDay(index)">
-              <template v-if="getFormattedShortDate(now) == getFormattedShortDate(day)">
+              <template v-if="getFormattedDate(now) == getFormattedDate(day)">
                 <strong>Heute</strong>
               </template>
               <template v-else>
-                {{ getFormattedWeekDay(day) }} {{ getFormattedShortDate(day) }}
+                {{ getFormattedWeekDay(day) }} {{ getFormattedDate(day) }}
               </template>
             </div>
 

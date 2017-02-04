@@ -30,7 +30,6 @@
     "breakpoint-sass": "^2.7.1",
     "chromedriver": "^2.27.2",
     "data-layer-helper": "^0.1.0",
-    "date-format": "^1.0.0",
     "eslint": "^3.14.1",
     "express": "^4.14.1",
     "family.scss": "^1.0.8",
@@ -48,6 +47,7 @@
     "vue-i18n": "^4.10.0",
     "vue-lazyload": "^1.0.0-rc9",
     "vue-loader": "^10.1.2",
+    "vue-resource": "^1.1.2",
     "vue-template-compiler": "^2.1.10",
     "vuex": "^2.1.1",
     "webpack-hot-middleware": "^2.16.1"

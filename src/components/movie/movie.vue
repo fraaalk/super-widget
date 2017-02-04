@@ -1,5 +1,6 @@
 <template>
   <article 
+    class="movie"
     :data-movie-id="movie.movieId" 
     :data-group-id="movie.groupId">
     <div class="grid">
@@ -11,7 +12,8 @@
           {{ flag }}
         </span>
       </header>
-      <div class="grid__col-5 grid__col-xs-3 grid__col-md-2 grid__col--bleed">
+
+      <div class="movie__image grid__col-5 grid__col-xs-3 grid__col-md-2 grid__col--bleed">
         <div class="grid">
           <div class="grid__col-12">
             <div class="ui-aspect ui-aspect-7-10">
@@ -31,11 +33,23 @@
                 </template>
               </div>
             </div>
+
+            <div class="grid__col-12 u-bleed-left u-bleed-right u-bleed-bottom">
+              <button type="button" class="ui-button ui-corners ui-button--secondary"
+                @click="fetchMovieData()">
+                <div class="ui-button__inner">
+                  <kh-svg-icon
+                    icon-class="ui-button__icon"
+                    icon-xlink="#svg-info">
+                  </kh-svg-icon>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="grid__col-12 grid__col-sm-9 grid__col-md-10">
+      <div class="movie__schedule grid__col-12 grid__col-sm-9 grid__col-md-10 grid--order-3 grid--order-2-sm">
         <kh-carousel
           :slidesPerPage="carouselConfig.slidesPerPage"
           :cssClasses="carouselConfig.cssClasses"
@@ -47,11 +61,11 @@
             :slideIndex="index"
             :componentId="carouselId">
             <div class="ui-button ui-button--secondary u-no-wrap is-inactive" :data-timestamp="day">
-              <template v-if="getFormattedShortDate(now) == getFormattedShortDate(day)">
+              <template v-if="getFormattedDate(now) == getFormattedDate(day)">
                 <strong>Heute</strong>
               </template>
               <template v-else>
-                {{ getFormattedWeekDay(day) }} {{ getFormattedShortDate(day) }}
+                {{ getFormattedWeekDay(day) }} {{ getFormattedDate(day) }}
               </template>
             </div>
 
@@ -93,20 +107,44 @@
         </button>
       </div>
 
-      <div class="grid__col-7 grid__col-sm-9 grid__col-md-10">
+      <div class="movie__info grid__col-7 grid__col-xs-9 grid__col-sm-12 grid__col-md-10 grid--order-2 grid--order-3-sm u-bleed-top">
         <div class="movie-info movie-info--short">
           <dl class="ui-defintion-list ui-definition-list--inline">
-              <dt v-if="movie.duration">{{ $t('duration') }}</dt>
-              <dd v-if="movie.duration">{{ movie.duration }}</dd>
-              <dt v-if="movie.ageRating">{{ $t('ageRating') }}</dt>
-              <dd v-if="movie.ageRating">{{ movie.ageRating }}</dd>
-              <dt v-if="movie.language">{{ $t('language') }}<template v-if="movie.subtitle"> / {{ $t('subtitle') }}</template></dt>
-              <dd v-if="movie.language">{{ movie.language }} <template v-if="movie.subtitle"> / {{ movie.subtitle }}</template></dd>
-              <dt v-if="movie.genre">{{ $t('genre') }}</dt>
-              <dd>{{ movie.genre }}</dd>
+              <template v-if="movie.duration">
+                <dt>{{ $t('duration') }}</dt>
+                <dd>{{ movie.duration }}</dd>
+              </template>
+              <template v-if="movie.ageRating">
+                <dt>{{ $t('ageRating') }}</dt>
+                <dd>{{ movie.ageRating }}</dd>
+              </template>
+              <template v-if="movie.language">
+                <dt>{{ $t('language') }}<template v-if="movie.subtitle"> / {{ $t('subtitle') }}</template></dt>
+                <dd>{{ movie.language }} <template v-if="movie.subtitle"> / {{ movie.subtitle }}</template></dd>
+              </template>
+              <template v-if="movie.genre">
+                <dt>{{ $t('genre') }}</dt>
+                <dd>{{ movie.genre }}</dd>
+              </template>
           </dl>
         </div>
       </div>
+
+      <div class="movie__info grid__col-12 u-bleed-top grid--order-4">
+        <kh-movie-info :movieId="componentId"></kh-movie-info>
+      </div>
+
+      <!-- <div class="movie-info movie-info--trailer">
+      <video class="video-player video-js vjs-default-skin vjs-big-play-centered" data-module="video-player" title="<%= details.title %>" controls preload="auto" poster="">
+        <source 
+          v-for="trailer in movie.trailers"
+          :src="trailer.url" 
+          :type="`video/${trailer.format}`" 
+          :label="trailer.height" 
+          :res="trailer.height">
+      </video>
+    </div>
+  </div> -->
     </div>
 
     <kh-modal 
@@ -134,14 +172,17 @@
 
 <script>
 import 'array.prototype.findindex';
+import objectAssign from 'object-assign';
 import { mapGetters } from 'vuex';
 import SVGIcon from './../SVGIcon';
 import Carousel from './../carousel/carousel';
 import CarouselSlide from './../carousel/carousel-slide';
+import MovieInfo from './../movie/movie-info';
 import Modal from './../modal/modal';
 import EventBus from './../../services/event-bus';
 import showsMixin from './../shows/shows-mixin';
 import dateFormatMixin from './../../mixins/date-format';
+import DataLayer from './../../services/data-layer';
 
 export default {
   mixins: [
@@ -184,11 +225,31 @@ export default {
     ]),
 
     /**
+     * Returns a unique identifier as componentId to store
+     * the component state in vuex. When fetching data via
+     * vue-ressource the component will get updated with
+     * additional infos like scene images, cast etc...
+     * @returns {String} - Identifier
+     */
+    componentId() {
+      return `${this._uid}-movie`;
+    },
+
+    /**
      * Returns a unique identifier as carouselId to store the
      * current state of carousel in vuex
+     * @returns {String} - Identifier
      */
     carouselId() {
-      return `carousel-m-${this._uid}`;
+      return `${this._uid}-carousel`;
+    },
+
+    /**
+     * Returns a reference to the carousel component stored in vuex
+     * @returns {Object} - Carousel object
+     */
+    carousel() {
+      return this.$store.state.components[this.carouselId];
     },
 
     /**
@@ -211,14 +272,6 @@ export default {
       return this.days.findIndex(day =>
         day > this.movie.firstShow
       ) - 1;
-    },
-
-    /**
-     * Returns a reference to the carousel component stored in vuex
-     * @returns {Object} - Carousel object
-     */
-    carousel() {
-      return this.$store.state.components[this.carouselId];
     },
 
     /**
@@ -246,7 +299,7 @@ export default {
      */
     preSaleButtonHint() {
       return this.$t('preSaleHint', {
-        date: this.getFormattedShortDate(this.movie.firstShow),
+        date: this.getFormattedDate(this.movie.firstShow),
       });
     },
 
@@ -281,7 +334,7 @@ export default {
 
       if (show.length > 1) {
         this.modal = {
-          body: `Bitte wählen Sie einen Saal für „<strong>${baseShow.name}</strong>“ am ${this.getFormattedShortDate(baseShow.start)} um ${this.getFormattedTime(baseShow.start)}`,
+          body: `Bitte wählen Sie einen Saal für „<strong>${baseShow.name}</strong>“ am ${this.getFormattedDate(baseShow.start)} um ${this.getFormattedTime(baseShow.start)}`,
           show: true,
           selectedShows: show,
         };
@@ -292,12 +345,52 @@ export default {
     goToFirstShow() {
       EventBus.$emit(`${this.carouselId}.goTo`, this.firstShowDayIndex);
     },
+    fetchMovieData() {
+      // To prevent fetching data a second time, check if the movie already
+      if (this.$store.state.components[this.componentId].title) {
+        return;
+      }
+
+      const providerId = DataLayer.get('cinema.providerId');
+      const movieId = this.movie.movieId.indexOf('_') === 0
+        ? this.movie.movieId.substr(1)
+        : this.movie.movieId;
+
+      const dataUrl = this.movie.movieId.indexOf('_') === 0
+        ? `https://www.kinoheld.local/ajax/movieData?movieId=${movieId}&providerId=${providerId}`
+        : `https://www.kinoheld.local/ajax/movieData?movieId=${movieId}`;
+
+      this.$http.get(dataUrl)
+        .then((response) => {
+          // Success callback
+          // Store component mutation in vuex
+          this.$store.commit('UPDATE_COMPONENT', {
+            componentId: this.componentId,
+            data: {
+              ...objectAssign(this.movie, response.body),
+            },
+          });
+        }, () => {
+          // Error callback
+          // @TODO send sentry event
+        });
+    },
   },
   components: {
     'kh-modal': Modal,
     'kh-carousel': Carousel,
     'kh-carousel-slide': CarouselSlide,
     'kh-svg-icon': SVGIcon,
+    'kh-movie-info': MovieInfo,
+  },
+  created() {
+    // Add the component in its current state to vuex
+    this.$store.commit('ADD_COMPONENT', {
+      componentId: this.componentId,
+      data: {
+        ...this.movie,
+      },
+    });
   },
 };
 </script>

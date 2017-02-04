@@ -4,6 +4,8 @@
 import Vue from 'vue';
 import VueLazyload from 'vue-lazyload';
 import VueI18n from 'vue-i18n';
+import VueResource from 'vue-resource';
+
 import App from './App';
 import Store from './services/store';
 
@@ -11,7 +13,7 @@ import Store from './services/store';
 const locales = {
   en: {
     showsList: {
-      title: {
+      viewTitle: {
         movies: 'Movie view',
         days: 'Daily view',
         shows: 'List view',
@@ -30,11 +32,18 @@ const locales = {
       preSaleHint: 'Pre sales start on {date}',
       noDataForTheSelectedDay: 'No data available for the selected date.',
       searchAndFilterShows: 'Search and filter shows',
+      title: 'Title',
+      originalTitle: 'Original title',
+      production: 'Production',
+      releaseDate: 'Release date',
+      distributor: 'Distributor',
+      director: 'Director',
+      actors: 'Actors',
     },
   },
   de: {
     showsList: {
-      title: {
+      viewTitle: {
         movies: 'Filmansicht',
         days: 'Tagesansicht',
         shows: 'Listenansicht',
@@ -54,19 +63,24 @@ const locales = {
     preSaleHint: 'Vorverkauf für den {date}',
     noDataForTheSelectedDay: 'Leider liegen uns für den gewählten Tag keine Daten vor.',
     searchAndFilterShows: 'Vorstellungen suchen und filtern',
+    title: 'Title',
+    originalTitle: 'Original title',
+    production: 'Production',
+    releaseDate: 'Release date',
+    distributor: 'Distributor',
+    director: 'Director',
+    actors: 'Actors',
   },
 };
 
-// VueLazyload: https://github.com/hilongjw/vue-lazyload
 Vue.use(VueLazyload, {
   preLoad: 1.3,
-  // error: 'dist/error.png',
-  // loading: 'dist/loading.gif',
   attempt: 1,
 });
 
-// VueI18n: https://kazupon.github.io/vue-i18n
 Vue.use(VueI18n);
+Vue.use(VueResource);
+
 Vue.config.lang = 'de';
 Object.keys(locales).forEach((lang) => {
   Vue.locale(lang, locales[lang]);

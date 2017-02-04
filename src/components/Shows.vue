@@ -122,11 +122,12 @@ export default {
      * @returns {String} - Translated title
      */
     title() {
-      return `${this.$t('program')} - ${this.$t(`showsList.title.${this.activeLayout}`)}`;
+      return `${this.$t('program')} - ${this.$t(`showsList.viewTitle.${this.activeLayout}`)}`;
     },
   },
   created() {
     this.generateShows(DataLayer.get('shows'));
+    this.generateMovies(DataLayer.get('movies'));
 
     // @TODO: check for set start / end date
     const endDate = DataLayer.get('config.widget.endDate');
@@ -147,6 +148,18 @@ export default {
       setInterval(() => {
         this.$store.state.now = Date.now();
       }, 1000);
+    },
+
+    generateMovies(movies) {
+      // Convert datalayer shows object to a real array
+      // and sort it by start ascending
+      const moviesArray = Object.keys(movies).map(key =>
+        movies[key]
+      ).sort((a, b) =>
+        a.id - b.id
+      );
+
+      this.$store.state.movies = moviesArray;
     },
 
     /**

@@ -7,7 +7,7 @@
         <a class="ui-link ui-link--silent grid grid--align-center" 
           :href="show.url">
             <div class="grid__col-3 grid__col-sm-2 grid__cell">
-              <span>{{ getFormattedWeekDay(show.start) }} {{ getFormattedShortDate(show.start) }}</span>
+              <span>{{ getFormattedWeekDay(show.start) }} {{ getFormattedDate(show.start) }}</span>
               <span>{{ getFormattedTime(show.start) }}</span>
             </div>
             <div class="grid__col-6 grid__col-sm-7 grid__cell">

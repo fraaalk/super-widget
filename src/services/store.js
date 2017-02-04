@@ -10,6 +10,7 @@ export default new Vuex.Store({
     activeLayout: 'movies',
     days: [],
     shows: [],
+    movies: [],
     components: {},
     viewport: {},
     config: DataLayer.get('config'),
