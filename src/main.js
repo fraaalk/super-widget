@@ -5,6 +5,8 @@ import Vue from 'vue';
 import VueLazyload from 'vue-lazyload';
 import VueI18n from 'vue-i18n';
 import VueResource from 'vue-resource';
+import VideoPlayer from 'vue-video-player';
+
 
 import App from './App';
 import Store from './services/store';
@@ -72,6 +74,14 @@ const locales = {
     actors: 'Actors',
   },
 };
+
+VideoPlayer.config({
+  youtube: true,
+  switcher: true,
+  hls: false,
+});
+
+Vue.use(VideoPlayer);
 
 Vue.use(VueLazyload, {
   preLoad: 1.3,

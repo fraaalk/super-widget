@@ -1,6 +1,7 @@
 <template>
   <article 
     class="movie"
+    :data-uid="_uid"
     :data-movie-id="movie.movieId" 
     :data-group-id="movie.groupId">
     <div class="grid">
@@ -35,21 +36,48 @@
             </div>
 
             <div class="grid__col-12 u-bleed-left u-bleed-right u-bleed-bottom">
-              <button type="button" class="ui-button ui-corners ui-button--secondary"
-                @click="fetchMovieData()">
-                <div class="ui-button__inner">
-                  <kh-svg-icon
-                    icon-class="ui-button__icon"
-                    icon-xlink="#svg-info">
-                  </kh-svg-icon>
-                </div>
-              </button>
+              <div class="ui-button-group">
+                <!-- movie info toggle -->
+                <button 
+                  type="button" 
+                  class="ui-button ui-button--secondary"
+                  :class="{
+                    'is-active': showMovieInfo, 
+                    'ui-corners-left': movie.hasTrailer,
+                    'ui-corners': !movie.hasTrailer
+                  }"
+                  @click="toggleMovieInfo()">
+                  <div class="ui-button__inner">
+                    <kh-svg-icon
+                      icon-class="ui-button__icon"
+                      icon-xlink="#svg-info">
+                    </kh-svg-icon>
+                  </div>
+                </button>
+                <!-- /movie info toggle -->
+
+                <!-- movie trailer toggle -->
+                <button 
+                  type="button" 
+                  class="ui-button ui-corners-right ui-button--secondary"
+                  :class="{'is-active': showMovieTrailer }"
+                  @click="toggleMovieTrailer()"
+                  v-if="movie.hasTrailer">
+                  <div class="ui-button__inner">
+                    <kh-svg-icon
+                      icon-class="ui-button__icon"
+                      icon-xlink="#svg-play">
+                    </kh-svg-icon>
+                  </div>
+                </button>
+                <!-- /movie trailer toggle -->
+              </div>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="movie__schedule grid__col-12 grid__col-sm-9 grid__col-md-10 grid--order-3 grid--order-2-sm">
+      <div class="grid__col-12 grid__col-sm-9 grid__col-md-10 grid--order-3 grid--order-2-sm">
         <kh-carousel
           :slidesPerPage="carouselConfig.slidesPerPage"
           :cssClasses="carouselConfig.cssClasses"
@@ -76,7 +104,7 @@
                   class="ui-button ui-button--cta" 
                   :href="show[0].url"
                   :class="{'is-disabled': now >= show[0].start}"
-                  @click.prevent="selectAuditorium(show)">
+                  @click.prevent="toggleMovieModal(show)">
                   <span>{{ getFormattedTime(show[0].start) }}</span>
                 </a>
                 <!-- no show found -->
@@ -90,6 +118,7 @@
           </kh-carousel-slide>
         </kh-carousel>
 
+        <!-- pre sale button -->
         <button 
           type="button" 
           class="movie__pre-sale ui-button ui-button--cta ui-corners"
@@ -105,46 +134,33 @@
             </kh-svg-icon>
           </div>
         </button>
+        <!-- /pre sale button -->
       </div>
 
-      <div class="movie__info grid__col-7 grid__col-xs-9 grid__col-sm-12 grid__col-md-10 grid--order-2 grid--order-3-sm u-bleed-top">
-        <div class="movie-info movie-info--short">
-          <dl class="ui-defintion-list ui-definition-list--inline">
-              <template v-if="movie.duration">
-                <dt>{{ $t('duration') }}</dt>
-                <dd>{{ movie.duration }}</dd>
-              </template>
-              <template v-if="movie.ageRating">
-                <dt>{{ $t('ageRating') }}</dt>
-                <dd>{{ movie.ageRating }}</dd>
-              </template>
-              <template v-if="movie.language">
-                <dt>{{ $t('language') }}<template v-if="movie.subtitle"> / {{ $t('subtitle') }}</template></dt>
-                <dd>{{ movie.language }} <template v-if="movie.subtitle"> / {{ movie.subtitle }}</template></dd>
-              </template>
-              <template v-if="movie.genre">
-                <dt>{{ $t('genre') }}</dt>
-                <dd>{{ movie.genre }}</dd>
-              </template>
-          </dl>
-        </div>
+      <div class="grid__col-7 grid__col-xs-9 grid__col-sm-12 grid__col-md-10 grid--order-2 grid--order-3-sm u-bleed-top">
+        <!-- short movie info -->
+        <kh-movie-info 
+          :movieId="componentId"
+          infoType="short">
+        </kh-movie-info>
+        <!-- /short movie info -->
       </div>
 
-      <div class="movie__info grid__col-12 u-bleed-top grid--order-4">
-        <kh-movie-info :movieId="componentId"></kh-movie-info>
+      <div class="grid__col-12 u-bleed-top grid--order-4">
+        <!-- long movie info -->
+        <kh-movie-info
+          :movieId="componentId" 
+          infoType="long"
+          v-if="showMovieInfo">
+        </kh-movie-info>
+        <!-- /long movie info -->
+        <!-- movie trailer -->
+        <kh-movie-trailer
+          v-if="showMovieTrailer"
+          :movieId="componentId">
+        </kh-movie-trailer>
+        <!-- /movie trailer -->
       </div>
-
-      <!-- <div class="movie-info movie-info--trailer">
-      <video class="video-player video-js vjs-default-skin vjs-big-play-centered" data-module="video-player" title="<%= details.title %>" controls preload="auto" poster="">
-        <source 
-          v-for="trailer in movie.trailers"
-          :src="trailer.url" 
-          :type="`video/${trailer.format}`" 
-          :label="trailer.height" 
-          :res="trailer.height">
-      </video>
-    </div>
-  </div> -->
     </div>
 
     <kh-modal 
@@ -178,6 +194,7 @@ import SVGIcon from './../SVGIcon';
 import Carousel from './../carousel/carousel';
 import CarouselSlide from './../carousel/carousel-slide';
 import MovieInfo from './../movie/movie-info';
+import MovieTrailer from './../movie/movie-trailer';
 import Modal from './../modal/modal';
 import EventBus from './../../services/event-bus';
 import showsMixin from './../shows/shows-mixin';
@@ -194,6 +211,10 @@ export default {
   ],
   data() {
     return {
+      showMovieInfo: false,
+      showMovieTrailer: false,
+      showMovieModal: false,
+      dataFetched: false,
       modal: {
         header: '',
         message: '',
@@ -329,7 +350,7 @@ export default {
     },
   },
   methods: {
-    selectAuditorium(show) {
+    toggleMovieModal(show) {
       const baseShow = show[0];
 
       if (show.length > 1) {
@@ -342,15 +363,26 @@ export default {
         window.location.href = baseShow.url;
       }
     },
-    goToFirstShow() {
-      EventBus.$emit(`${this.carouselId}.goTo`, this.firstShowDayIndex);
-    },
-    fetchMovieData() {
-      // To prevent fetching data a second time, check if the movie already
-      if (this.$store.state.components[this.componentId].title) {
-        return;
+
+    toggleMovieInfo() {
+      if (!this.dataFetched) {
+        this.fetchData();
       }
 
+      this.showMovieInfo = !this.showMovieInfo;
+      this.showMovieTrailer = false;
+    },
+
+    toggleMovieTrailer() {
+      if (!this.dataFetched) {
+        this.fetchData();
+      }
+
+      this.showMovieTrailer = !this.showMovieTrailer;
+      this.showMovieInfo = false;
+    },
+
+    fetchData() {
       const providerId = DataLayer.get('cinema.providerId');
       const movieId = this.movie.movieId.indexOf('_') === 0
         ? this.movie.movieId.substr(1)
@@ -362,6 +394,7 @@ export default {
 
       this.$http.get(dataUrl)
         .then((response) => {
+          this.dataFetched = true;
           // Success callback
           // Store component mutation in vuex
           this.$store.commit('UPDATE_COMPONENT', {
@@ -375,6 +408,10 @@ export default {
           // @TODO send sentry event
         });
     },
+
+    goToFirstShow() {
+      EventBus.$emit(`${this.carouselId}.goTo`, this.firstShowDayIndex);
+    },
   },
   components: {
     'kh-modal': Modal,
@@ -382,6 +419,7 @@ export default {
     'kh-carousel-slide': CarouselSlide,
     'kh-svg-icon': SVGIcon,
     'kh-movie-info': MovieInfo,
+    'kh-movie-trailer': MovieTrailer,
   },
   created() {
     // Add the component in its current state to vuex
@@ -396,7 +434,16 @@ export default {
 </script>
 
 <style lang="scss">
+@import "./../../vars";
+@import "~breakpoint-sass/stylesheets/breakpoint";
+@import "~family.scss/source/src/family";
+
 .movie__pre-sale {
-  margin: 1em;
+  //@TODO: fix magic number and important
+  margin: 2em 36px 0 36px !important;
+
+  @include breakpoint($bp-md-up) { 
+    max-width: 50%;
+  }
 }
 </style>
