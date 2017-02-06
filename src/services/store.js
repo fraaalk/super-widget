@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import DataLayer from './../services/data-layer';
+
+import Viewport from './../store/modules/viewport';
 
 Vue.use(Vuex);
 
@@ -13,12 +14,8 @@ export default new Vuex.Store({
     movies: [],
     components: {},
     viewport: {},
-    config: DataLayer.get('config'),
   },
   mutations: {
-    UPDATE_VIEWPORT(state, payload) {
-      state.viewport = payload;
-    },
     ADD_COMPONENT(state, payload) {
       Vue.set(state.components, payload.componentId, payload.data);
     },
@@ -34,6 +31,8 @@ export default new Vuex.Store({
     days: state => state.days,
     now: state => state.now,
     config: state => state.config,
-    currentBreakpoint: state => state.viewport.breakpoint,
+  },
+  modules: {
+    Viewport,
   },
 });

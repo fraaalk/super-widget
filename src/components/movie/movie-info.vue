@@ -42,31 +42,30 @@
           </dd>
         </template>
         <template v-if="movie.startdate">
-          <dt class="movie-info__release-date linebreak-before">{{ $t('releaseDate') }}</dt>
+          <dt class="movie-info__release-date u-linebreak-before">{{ $t('releaseDate') }}</dt>
           <dd class="movie-info__release-date">{{ getFormattedDate(movie.startdate, 'full') }}</dd>
         </template>
         <template v-if="movie.distributor">
-          <dt class="movie-info__distributor linebreak-before">{{ $t('distributor') }}</dt>
+          <dt class="movie-info__distributor u-linebreak-before">{{ $t('distributor') }}</dt>
           <dd class="movie-info__distributor">{{ movie.distributor }}</dd>
         </template>
         <template v-if="movie.directors">
-          <dt class="movie-info__director newline-before">{{ $t('director') }}</dt>
+          <dt class="movie-info__director u-newline-before">{{ $t('director') }}</dt>
           <dd class="movie-info__director">
               <span v-for="director in movie.directors">{{ director.name }}</span>
           </dd>
         </template>
         <template v-if="movie.actors">
-          <dt class="movie-info__actors linebreak-before">{{ $t('actors') }}</dt>
+          <dt class="movie-info__actors u-linebreak-before">{{ $t('actors') }}</dt>
           <dd class="movie-info__actors">
-              <span v-for="actor in movie.actors">{{ actor.name }}</span>
+              <span v-for="actor in movie.actors"> {{ actor.name }}</span>
           </dd>
         </template>
       </dl>
 
       <ul class="movie-info__scenes" v-if="movie.scenes">
         <li v-for="scene in movie.scenes">
-          <img 
-            class="ui-image ui-image--responsive ui-image--lazyload"
+          <img class="ui-image ui-image--responsive ui-image--lazyload"
             v-lazy="scene"
             src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg' viewBox%3D'0 0 4 3'%2F%3E">
         </li>
@@ -112,24 +111,6 @@ export default {
 @import "~family.scss/source/src/family";
 
 .movie-info {
-  // .movie-info__view
-  &__view {
-      position: relative;
-  }
-
-  // .movie-info--trailer
-  &--trailer {
-    width: 100%;
-    position: relative;
-    padding-bottom: 50%;
-
-    .video-player {
-      width: 100%;
-      position: absolute;
-      height: 100%;
-    }
-  }
-
   // .movie-info--short
   &--short {
     > div {

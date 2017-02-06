@@ -2,14 +2,18 @@
   <div id="widget">
     <kh-widget-header></kh-widget-header>
     <div class="page">
-      <kh-shows-list></kh-shows-list>
+      <div class="page__wrapper page__wrapper--light">
+        <div class="page__content">
+          <kh-shows-list></kh-shows-list>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import WidgetHeader from './components/WidgetHeader';
-import Shows from './components/Shows';
+import Shows from './components/shows/shows';
 import Viewport from './services/viewport';
 import EventBus from './services/event-bus';
 

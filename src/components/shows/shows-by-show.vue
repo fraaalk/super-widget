@@ -19,7 +19,7 @@
             <div class="grid__col-3 grid__col-sm-3 grid--align-content-end">
               <div class="ui-button ui-button--cta ui-corners u-text-center">
                 <div class="ui-button__inner">
-                  Tickets
+                  {{ $t('tickets') }}
                 </div>
               </div>
             </div>

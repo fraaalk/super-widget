@@ -199,7 +199,6 @@ import Modal from './../modal/modal';
 import EventBus from './../../services/event-bus';
 import showsMixin from './../shows/shows-mixin';
 import dateFormatMixin from './../../mixins/date-format';
-import DataLayer from './../../services/data-layer';
 
 export default {
   mixins: [
@@ -383,7 +382,7 @@ export default {
     },
 
     fetchData() {
-      const providerId = DataLayer.get('cinema.providerId');
+      const providerId = this.$dataLayer.get('cinema.providerId');
       const movieId = this.movie.movieId.indexOf('_') === 0
         ? this.movie.movieId.substr(1)
         : this.movie.movieId;

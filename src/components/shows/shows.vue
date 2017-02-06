@@ -1,85 +1,72 @@
 <template>
-  <div class="page__wrapper page__wrapper--light">
-    <div class="page__content">
-      <div class="shows">
-        <header class="ui-header ui-header--bordered grid grid--align-center">
-          <div class="grid__col-12 grid__col-xs-8 grid__col-lg-9 grid--order-2 grid--order-1-xs u-bleed-left">
-              <h2 class="ui-title ui-title--small">
-                {{ title }}
-              </h2>
-          </div>
-          <div class="grid__col-12 grid__col-xs-4 grid__col-lg-3 grid--order-1 grid--order-2-xs u-bleed-left u-bleed-right">
-            <div class="shows__controls">
-              <button 
-                type="button" 
-                class="shows__controls-filter ui-button ui-button--secondary ui-corners"
-                :class="{'is-active': showFilters}"
-                :title="$t('searchAndFilterShows')"
-                @click="showFilters = !showFilters;">
-                <div class="ui-button__inner">
-                  <kh-svg-icon icon-class="ui-button__icon" icon-xlink="#svg-magnifier"></kh-svg-icon>
-                </div>
-              </button>
-
-              <div class="shows__controls-layout ui-button-group">
-                <button 
-                  type="button" 
-                  class="ui-button ui-button--secondary"
-                  v-for="button in layouts"
-                  :title="$t(`showsList.switch.${button.key}`)"
-                  :class="{'is-active': (activeLayout == button.key)}"
-                  @click="setLayout(button.key)">
-                    <kh-svg-icon icon-class="ui-button__icon"
-                      :icon-xlink="button.icon">
-                    </kh-svg-icon>
-                  </button>
-              </div>
-            </div>
-          </div>
-        </header>
-
-        <transition name="custom-transition-classes"
-          enter-active-class="animated slideInDown"
-          leave-active-class="animated slideOutUp">
-          <div v-if="showFilters">
-            <input 
-              placeholder="... nach einem Film suchen"
-              type="text" 
-              v-model="filter">
-            
-            <label>
-              <input type="checkbox" v-model="reverse">reverse list?
-            </label>
-          </div>
-        </transition>
-
-        <transition mode="out-in" name="custom-transition-classes"
-          enter-active-class="animated fadeIn"
-          leave-active-class="animated fadeOut">
-          <keep-alive>
-            <component 
-              :is="'kh-shows-by-' + activeLayout">
-            </component>
-          </keep-alive>
-        </transition>
+  <div class="shows">
+    <header class="ui-header ui-header--bordered grid grid--align-center">
+      <div class="grid__col-12 grid__col-xs-8 grid__col-lg-9 grid--order-2 grid--order-1-xs u-bleed-left">
+          <h2 class="ui-title ui-title--small">
+            {{ title }}
+          </h2>
       </div>
-    </div>
+      <div class="grid__col-12 grid__col-xs-4 grid__col-lg-3 grid--order-1 grid--order-2-xs u-bleed-left u-bleed-right">
+        <div class="shows__controls">
+          <button 
+            type="button" 
+            class="shows__controls-filter ui-button ui-button--secondary ui-corners"
+            :class="{'is-active': showFilters}"
+            :title="$t('searchAndFilterShows')"
+            @click="showFilters = !showFilters;">
+            <div class="ui-button__inner">
+              <kh-svg-icon 
+                icon-class="ui-button__icon" 
+                icon-xlink="#svg-magnifier">
+              </kh-svg-icon>
+            </div>
+          </button>
+
+          <div class="shows__controls-layout ui-button-group">
+            <button 
+              type="button" 
+              class="ui-button ui-button--secondary"
+              v-for="button in layouts"
+              :title="$t(`showsList.switch.${button.key}`)"
+              :class="{'is-active': (activeLayout == button.key)}"
+              @click="setLayout(button.key)">
+                <kh-svg-icon 
+                  icon-class="ui-button__icon"
+                  :icon-xlink="button.icon">
+                </kh-svg-icon>
+              </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- <kh-shows-filter
+      v-if="showFilters">
+    </kh-shows-filter> -->
+
+    <transition mode="out-in" name="custom-transition-classes"
+      enter-active-class="animated fadeIn"
+      leave-active-class="animated fadeOut">
+      <keep-alive>
+        <component 
+          :is="'kh-shows-by-' + activeLayout">
+        </component>
+      </keep-alive>
+    </transition>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex';
-import SVGIcon from './SVGIcon';
-import Movies from './../components/shows/shows-by-movie';
-import Shows from './../components/shows/shows-by-show';
-import Days from './../components/shows/shows-by-day';
-import DataLayer from './../services/data-layer';
+import SVGIcon from './../SVGIcon';
+import Movies from './../../components/shows/shows-by-movie';
+import Shows from './../../components/shows/shows-by-show';
+import Days from './../../components/shows/shows-by-day';
+// import Filters from './../../components/shows/shows-filter';
 
 export default {
   data() {
     return {
-      filter: '',
-      reverse: false,
       showFilters: false,
       layouts: [
         {
@@ -101,6 +88,7 @@ export default {
     'kh-shows-by-movies': Movies,
     'kh-shows-by-shows': Shows,
     'kh-shows-by-days': Days,
+    // 'kh-shows-filter': Filters,
     'kh-svg-icon': SVGIcon,
   },
   computed: {
@@ -126,13 +114,11 @@ export default {
     },
   },
   created() {
-    this.generateShows(DataLayer.get('shows'));
-    this.generateMovies(DataLayer.get('movies'));
+    this.generateShows(this.$dataLayer.get('shows'));
+    this.generateMovies(this.$dataLayer.get('movies'));
 
-    // @TODO: check for set start / end date
-    const endDate = DataLayer.get('config.widget.endDate');
-    const startDate = DataLayer.get('config.widget.startDate');
-
+    const endDate = this.$dataLayer.get('config.widget.endDate');
+    const startDate = this.$dataLayer.get('config.widget.startDate');
 
     this.generateDays(startDate, endDate);
     // this.tickNow();

@@ -23,21 +23,12 @@ export default {
         defaultSrcReId: 'low',
       };
 
-      if (this.trailers.length > 1) {
-        // options.sources = this.trailers.map(trailer => {
-        //   return {
-        //     type: trailer.format,
-        //     src: trailer.url,
-        //   };
-        // });
-      } else if (this.trailers && this.trailers.length === 1) {
+      if (this.trailers && this.trailers.length === 1) {
         options.source = {
           type: `video/${this.trailers[0].format}`,
           src: this.trailers[0].url,
         };
       }
-
-      console.log(options);
 
       return options;
     },

@@ -5,8 +5,8 @@ import Vue from 'vue';
 import VueLazyload from 'vue-lazyload';
 import VueI18n from 'vue-i18n';
 import VueResource from 'vue-resource';
-import VideoPlayer from 'vue-video-player';
-
+// import VideoPlayer from 'vue-video-player';
+import DataLayer from './services/data-layer';
 
 import App from './App';
 import Store from './services/store';
@@ -25,6 +25,7 @@ const locales = {
         days: 'Switch to daily view',
         shows: 'Switch to list view',
       },
+      tickets: 'tickets',
       duration: 'Duration',
       ageRating: 'Age Rating',
       language: 'Language',
@@ -56,6 +57,7 @@ const locales = {
         shows: 'Zu Listenansicht wechseln',
       },
     },
+    tickets: 'Tickets',
     duration: 'Dauer',
     ageRating: 'FSK',
     language: 'Sprache',
@@ -65,23 +67,27 @@ const locales = {
     preSaleHint: 'Vorverkauf für den {date}',
     noDataForTheSelectedDay: 'Leider liegen uns für den gewählten Tag keine Daten vor.',
     searchAndFilterShows: 'Vorstellungen suchen und filtern',
-    title: 'Title',
-    originalTitle: 'Original title',
-    production: 'Production',
-    releaseDate: 'Release date',
-    distributor: 'Distributor',
-    director: 'Director',
-    actors: 'Actors',
+    title: 'Titel',
+    originalTitle: 'Originaltitel',
+    production: 'Produktion',
+    releaseDate: 'Erscheinungsdatum',
+    distributor: 'Verleih',
+    director: 'Regie',
+    actors: 'Darsteller',
   },
 };
 
-VideoPlayer.config({
-  youtube: true,
-  switcher: true,
-  hls: false,
+Vue.use(DataLayer, {
+  dataLayer: window.dataLayer,
 });
 
-Vue.use(VideoPlayer);
+// VideoPlayer.config({
+//   youtube: true,
+//   switcher: true,
+//   hls: false,
+// });
+
+// Vue.use(VideoPlayer);
 
 Vue.use(VueLazyload, {
   preLoad: 1.3,

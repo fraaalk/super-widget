@@ -1,10 +1,17 @@
 import _throttle from 'lodash/throttle';
-// import Vuex from 'vuex';
 
-import DataLayer from './../services/data-layer';
 import EventBus from './../services/event-bus';
 
-const availableBreakpoints = DataLayer.get('config.breakpoints');
+// @TODO find a better solution for the viewport
+const availableBreakpoints = {
+  none: 0,
+  xs: 480,
+  sm: 600,
+  md: 768,
+  lg: 992,
+  xlg: 1200,
+};
+
 const classNames = {
   uiTouch: 'ui-touch',
   uiMouse: 'ui-mouse',

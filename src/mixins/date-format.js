@@ -1,5 +1,3 @@
-import DataLayer from './../services/data-layer';
-
 /* mixins around the date format library to return the correct formatted dates from a timestamp
 */
 const dateMixin = {
@@ -34,8 +32,8 @@ const dateMixin = {
      */
     getTimezoneOffsetForShowDate(date) {
       return date.getTimezoneOffset() < this.standardTimezoneOffset
-        ? DataLayer.get('config.timezoneOffsetDST')
-        : DataLayer.get('config.timezoneOffset');
+        ? this.$dataLayer.get('config.timezoneOffsetDST')
+        : this.$dataLayer.get('config.timezoneOffset');
     },
 
     /**
@@ -44,7 +42,7 @@ const dateMixin = {
      * @returns {String} - Formatted day in utc
      */
     getFormattedDate(timestamp, displayFormat = 'short') {
-      const format = DataLayer.get(`config.dateFormats.${displayFormat}`);
+      const format = this.$dataLayer.get(`config.dateFormats.${displayFormat}`);
       const date = new Date(timestamp);
       return this.formatDate(format, date, this.getTimezoneOffsetForShowDate(date));
     },
@@ -66,7 +64,7 @@ const dateMixin = {
      * @returns {String} - Formatted time
      */
     getFormattedWeekDay(timestamp) {
-      const weekDays = DataLayer.get('config.weekDays');
+      const weekDays = this.$dataLayer.get('config.weekDays');
       const date = new Date(timestamp);
       return weekDays[date.getDay()];
     },

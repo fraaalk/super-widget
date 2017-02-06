@@ -19,7 +19,6 @@ import groupBy from 'lodash/groupBy';
 import sortBy from 'lodash/sortBy';
 import showsMixin from './../shows/shows-mixin';
 import dateFormatMixin from './../../mixins/date-format';
-import DataLayer from './../../services/data-layer';
 import Movie from './../movie/movie';
 
 const _ = {
@@ -59,7 +58,7 @@ export default {
           a.start - b.start
         );
         const baseShow = sortedShows[0];
-        const baseMovie = DataLayer.get('movies')[baseShow.movieId];
+        const baseMovie = this.$dataLayer.get('movies')[baseShow.movieId];
 
         // For each showsGroup generate a new show object
         enrichedShowsGroup[showName] = {};
