@@ -6,10 +6,18 @@ import VueLazyload from 'vue-lazyload';
 import VueI18n from 'vue-i18n';
 import VueResource from 'vue-resource';
 // import VideoPlayer from 'vue-video-player';
-import DataLayer from './services/data-layer';
+import Raven from 'raven-js';
+import RavenVue from 'raven-js/plugins/vue';
 
 import App from './App';
 import Store from './services/store';
+import DataLayer from './services/data-layer';
+
+// 'https://72be0c6b3fbe46e9b60ebd50b10116af@sentry.io/115384'
+Raven.config('', {
+  environment: window.dataLayer[0].config.assetsEnv,
+  release: window.dataLayer[0].config.assetsVersion,
+}).addPlugin(RavenVue, Vue).install();
 
 // @TODO load translations via DataLayer
 const locales = {

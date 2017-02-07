@@ -115,7 +115,7 @@ export default {
   },
   created() {
     this.generateShows(this.$dataLayer.get('shows'));
-    this.generateMovies(this.$dataLayer.get('movies'));
+    // this.generateMovies(this.$dataLayer.get('movies'));
 
     const endDate = this.$dataLayer.get('config.widget.endDate');
     const startDate = this.$dataLayer.get('config.widget.startDate');
@@ -136,17 +136,17 @@ export default {
       }, 1000);
     },
 
-    generateMovies(movies) {
-      // Convert datalayer shows object to a real array
-      // and sort it by start ascending
-      const moviesArray = Object.keys(movies).map(key =>
-        movies[key]
-      ).sort((a, b) =>
-        a.id - b.id
-      );
+    // generateMovies(movies) {
+    //   // Convert datalayer shows object to a real array
+    //   // and sort it by start ascending
+    //   const moviesArray = Object.keys(movies).map(key =>
+    //     movies[key]
+    //   ).sort((a, b) =>
+    //     a.id - b.id
+    //   );
 
-      this.$store.state.movies = moviesArray;
-    },
+    //   this.$store.state.movies = moviesArray;
+    // },
 
     /**
      * Returns a real array of the shows object provided by

@@ -20,12 +20,12 @@ export default {
      * Returns an array of unique movie/show names
      * @returns {Array} - Array of movies/show names
      */
-    movieList() {
-      const movieList = this.movies.map(movie =>
-        movie.name
-      );
-      return [...new Set(movieList)];
-    },
+    // movieList() {
+    //   const movieList = this.movies.map(movie =>
+    //     movie.name
+    //   );
+    //   return [...new Set(movieList)];
+    // },
 
     /**
      * Returns an array of unique flags

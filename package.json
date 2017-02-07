@@ -41,6 +41,7 @@
     "normalize-scss": "^6.0.0",
     "object-assign": "^4.1.1",
     "postcss-loader": "^1.2.2",
+    "raven-js": "^3.10.0",
     "reflex-grid": "^1.3.0",
     "shelljs": "^0.7.6",
     "throttle-debounce": "^1.0.1",

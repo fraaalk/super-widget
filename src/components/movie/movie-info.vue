@@ -99,7 +99,7 @@ export default {
     },
 
     movie() {
-      return this.$store.state.components[this.movieId];
+      return this.$store.state.movies[this.movieId];
     },
   },
 };

@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-
 import Viewport from './../store/modules/viewport';
 
 Vue.use(Vuex);
@@ -10,10 +9,9 @@ export default new Vuex.Store({
     now: Date.now(),
     activeLayout: 'movies',
     days: [],
+    movies: {},
     shows: [],
-    movies: [],
     components: {},
-    viewport: {},
   },
   mutations: {
     ADD_COMPONENT(state, payload) {
@@ -25,6 +23,20 @@ export default new Vuex.Store({
     ADD_SLIDE(state, payload) {
       state.components[payload.carouselId].slides.push(payload.data);
     },
+    ADD_MOVIE(state, payload) {
+      Vue.set(state.movies, payload.movieId, payload.data);
+    },
+    UPDATE_MOVIE(state, payload) {
+      state.movies[payload.movieId] = payload.data;
+    },
+  },
+  actions: {
+    addMovie: (context, payload) => {
+      context.commit('ADD_MOVIE', payload);
+    },
+    updateMovie: (context, payload) => {
+      context.commit('UPDATE_MOVIE', payload);
+    },
   },
   getters: {
     shows: state => state.shows,
@@ -32,7 +44,7 @@ export default new Vuex.Store({
     now: state => state.now,
     config: state => state.config,
   },
-  modules: {
+  modules: [
     Viewport,
-  },
+  ],
 });

@@ -78,9 +78,8 @@
       </div>
 
       <div class="grid__col-12 grid__col-sm-9 grid__col-md-10 grid--order-3 grid--order-2-sm">
-        <kh-carousel
-          :slidesPerPage="carouselConfig.slidesPerPage"
-          :cssClasses="carouselConfig.cssClasses"
+        <kh-carousel class="carousel--movie"
+          :slidesPerPage="{none: 3, xs: 3, sm: 4, md: 5, lg: 7, xlg: 7}"
           :totalSlides="schedule.length"
           :componentId="carouselId">
 
@@ -167,13 +166,13 @@
       :showHeader="false"
       :showFooter="false"
       cssClasses="ui-corners modal--auditorium-selection"
-      v-if="modal.show" 
-      @close="modal.show = false">
+      v-if="showMovieModal" 
+      @close="showMovieModal = false">
       <div slot="body" class="grid">
-        <div class="grid__col-12 grid__cell" 
-          v-html="modal.body">
+        <div class="grid__col-12 grid__cell">
+          Bitte wählen Sie einen Saal für „<strong>{{ modal.show.name }}</strong>“ am {{ getFormattedDate(modal.show.start) }} um {{ getFormattedTime(modal.show.start)}}
         </div>
-        <div v-for="show in modal.selectedShows" class="grid__col-6">
+        <div v-for="show in modal.shows" class="grid__col-6">
           <a 
             class="ui-button ui-button--primary ui-corners"
             :href="show.url">
@@ -189,7 +188,7 @@
 <script>
 import 'array.prototype.findindex';
 import objectAssign from 'object-assign';
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import SVGIcon from './../SVGIcon';
 import Carousel from './../carousel/carousel';
 import CarouselSlide from './../carousel/carousel-slide';
@@ -215,25 +214,8 @@ export default {
       showMovieModal: false,
       dataFetched: false,
       modal: {
-        header: '',
-        message: '',
-        show: false,
-        selectedShows: null,
-      },
-      carouselConfig: {
-        cssClasses: {
-          carousel: [
-            'carousel--movie',
-          ],
-        },
-        slidesPerPage: {
-          none: 3,
-          xs: 3,
-          sm: 4,
-          md: 5,
-          lg: 7,
-          xlg: 7,
-        },
+        show: {},
+        shows: [],
       },
     };
   },
@@ -262,6 +244,20 @@ export default {
      */
     carouselId() {
       return `${this._uid}-carousel`;
+    },
+
+    customMovie() {
+      return this.movie.movieId.indexOf('_') === 0;
+    },
+
+    providerId() {
+      return this.$dataLayer.get('cinema.providerId');
+    },
+
+    movieId() {
+      return this.customMovie
+        ? this.movie.movieId.substr(1)
+        : this.movie.movieId;
     },
 
     /**
@@ -349,20 +345,34 @@ export default {
     },
   },
   methods: {
+    ...mapActions([
+      'addMovie',
+      'updateMovie',
+    ]),
+
+    /**
+     * Toggles the visibility of the movie modal and populates it with
+     * the currently selected day and showtime. If there only is one show
+     * present it redirects to the show url
+     */
     toggleMovieModal(show) {
       const baseShow = show[0];
 
       if (show.length > 1) {
         this.modal = {
-          body: `Bitte wählen Sie einen Saal für „<strong>${baseShow.name}</strong>“ am ${this.getFormattedDate(baseShow.start)} um ${this.getFormattedTime(baseShow.start)}`,
-          show: true,
-          selectedShows: show,
+          show: baseShow,
+          shows: show,
         };
       } else {
         window.location.href = baseShow.url;
       }
     },
 
+    /**
+     * Fetches the additional movie data in case it has not been loaded yet
+     * and toggles the display of the movie info. When its being displayed,
+     * the trailer gets hidden.
+     */
     toggleMovieInfo() {
       if (!this.dataFetched) {
         this.fetchData();
@@ -372,6 +382,11 @@ export default {
       this.showMovieTrailer = false;
     },
 
+    /**
+     * Fetches the additional movie data in case it has not been loaded yet
+     * and toggles the visibility of the movie trailer. When its being displayed,
+     * the movie info gets hidden.
+     */
     toggleMovieTrailer() {
       if (!this.dataFetched) {
         this.fetchData();
@@ -381,33 +396,32 @@ export default {
       this.showMovieInfo = false;
     },
 
+    /**
+     * Fetches data via $http and updates the stored vuex component
+     * on success
+     */
     fetchData() {
-      const providerId = this.$dataLayer.get('cinema.providerId');
-      const movieId = this.movie.movieId.indexOf('_') === 0
-        ? this.movie.movieId.substr(1)
-        : this.movie.movieId;
+      const url = this.customMovie
+        ? `https://www.kinoheld.local/ajax/movieData?movieId=${this.movieId}&providerId=${this.providerId}`
+        : `https://www.kinoheld.local/ajax/movieData?movieId=${this.movieId}`;
 
-      const dataUrl = this.movie.movieId.indexOf('_') === 0
-        ? `https://www.kinoheld.local/ajax/movieData?movieId=${movieId}&providerId=${providerId}`
-        : `https://www.kinoheld.local/ajax/movieData?movieId=${movieId}`;
-
-      this.$http.get(dataUrl)
+      this.$http.get(url)
         .then((response) => {
           this.dataFetched = true;
-          // Success callback
-          // Store component mutation in vuex
-          this.$store.commit('UPDATE_COMPONENT', {
-            componentId: this.componentId,
+          this.updateMovie({
+            movieId: this.componentId,
             data: {
               ...objectAssign(this.movie, response.body),
             },
           });
         }, () => {
-          // Error callback
-          // @TODO send sentry event
+          // console.log(response, response.body);
         });
     },
 
+    /**
+     * Jumps to the slide index with the movies first show
+     */
     goToFirstShow() {
       EventBus.$emit(`${this.carouselId}.goTo`, this.firstShowDayIndex);
     },
@@ -421,9 +435,8 @@ export default {
     'kh-movie-trailer': MovieTrailer,
   },
   created() {
-    // Add the component in its current state to vuex
-    this.$store.commit('ADD_COMPONENT', {
-      componentId: this.componentId,
+    this.addMovie({
+      movieId: this.componentId,
       data: {
         ...this.movie,
       },

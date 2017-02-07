@@ -59,19 +59,19 @@ export default {
     };
   },
   created() {
-    window.addEventListener('message', (event) => {
-      if (!event.data || typeof (event.data) !== 'object') {
-        return;
-      }
+    // window.addEventListener('message', (event) => {
+    //   if (!event.data || typeof (event.data) !== 'object') {
+    //     return;
+    //   }
 
-      const message = JSON.parse(event.data);
+    //   const message = JSON.parse(event.data);
 
-      if (message.topic && message.topic === 'if_menu') {
-        this.menu(message.data);
-      }
-    });
+    //   if (message.topic && message.topic === 'if_menu') {
+    //     this.menu(message.data);
+    //   }
+    // });
 
-    window.parent.postMessage('if_get_menu', '*');
+    // window.parent.postMessage('if_get_menu', '*');
 
     this.menu = [{
       name: 'Impressum',
